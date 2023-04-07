@@ -8,7 +8,7 @@ function App() {
 return (
     <WeatherProvider>
         {/* <Home/> */}
-        <Menu/>
+        <p>APP Hello World</p>
     </WeatherProvider>
 
 );
