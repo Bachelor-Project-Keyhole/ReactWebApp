@@ -1,11 +1,13 @@
 import * as React from 'react'
+import Button from '../Button/Button'
 
 export interface MenuLayouotProps {
+  onManageDatapointClick: () => void
   style?: React.CSSProperties
   children?: React.ReactNode
 }
 
-const MenuLayout = ({ style, ...props }: MenuLayouotProps): JSX.Element => {
+const MenuLayout = ({ onManageDatapointClick, style, ...props }: MenuLayouotProps): JSX.Element => {
   document.body.style.margin = '0'
   return (
         <div style={{ ...wrapperStyles, ...style }}>
@@ -13,7 +15,8 @@ const MenuLayout = ({ style, ...props }: MenuLayouotProps): JSX.Element => {
                 <div style={{ marginRight: 10 }}>
                 <div style={{ backgroundColor: 'rebeccapurple', height: '100px', width: '120px' }} />
                 <div style={{ ...manageRowStyles }}>
-                    <div style={{ backgroundColor: '#4caf50', height: '50px', width: '100%' }} />
+                    {/* <div style={{ backgroundColor: '#4caf50', height: '50px', width: '100%' }} /> */}
+                    <Button text={'Manage Datapoints'} onClick={onManageDatapointClick} ></Button>
                     <div style={{ backgroundColor: '#2196f3', height: '50px', width: '100%' }} />
                 </div>
                 </div>
