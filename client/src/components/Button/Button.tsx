@@ -23,7 +23,7 @@ export interface ButtonStyles {
 }
 
 export const buttonStyles: React.CSSProperties = {
-  height: 50,
+  height: 24,
   width: 100
 
 }
