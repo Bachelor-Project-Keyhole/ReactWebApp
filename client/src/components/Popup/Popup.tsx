@@ -1,15 +1,20 @@
 import * as React from 'react'
 import { rgba } from 'polished'
+import Button from '../Button'
 
 export interface PopupProps {
+  onClose: () => void
   style?: React.CSSProperties
   children?: React.ReactNode
 }
 
-const Popup = ({ style, ...props }: PopupProps): JSX.Element => {
+const Popup = ({ onClose, style, ...props }: PopupProps): JSX.Element => {
   return (
     <div style={overlayStyle}>
         <div style={{ ...wrapperStyles, ...style }}>
+          <div style={{ position: 'absolute', top: 5, right: 5 }}>
+            <Button text='Close' onClick={onClose}/>
+          </div>
             {props.children}
         </div>
     </div>

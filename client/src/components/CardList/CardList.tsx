@@ -1,19 +1,25 @@
 import * as React from 'react'
-import Card from '../Card/Card'
+import DatapointCard from '../DatapointCard/DatapointCard'
 
 export interface CardListProps /* extends NodeList */ {
+  cardType: 'DatapointCard' | 'MemberCard'
   data: any[] // probably card
-  editHandler: () => void
-
+  editHandler: (key: string) => void
 }
 
-const CardList = ({ data, editHandler, ...porps }: CardListProps): JSX.Element => {
+const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps): JSX.Element => {
   return (
         <div>
             {data.map((item, index) => {
               return (
                     <div key={index}>
-                        <Card title={item.title} description={item.description} onEdit={editHandler}></Card>
+                      {card === 'DatapointCard' &&
+                         <DatapointCard title={item.title} value='12345' onEdit={() => { editHandler(item.key) }}></DatapointCard>
+                      }
+                      {card === 'MemberCard' &&
+                      <></>
+                      // MEMBER CARD GOES HERE
+                      }
                     </div>
               )
             })}
