@@ -6,9 +6,10 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   onClick?: () => void
   solid?: boolean
   icon?: React.ReactNode
+  type?: 'button' | 'submit' | 'reset'
 }
 
-const Button = ({ icon, text, solid, style, onClick }: ButtonProps): JSX.Element => {
+const Button = ({ icon, text, solid, style, onClick, type }: ButtonProps): JSX.Element => {
   return (
         <button style={{ ...buttonStyles, ...style }} onClick={onClick}>
             {icon}

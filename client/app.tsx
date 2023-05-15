@@ -5,8 +5,11 @@ import Home from './src/screens/Home'
 import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
 import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
+import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
 
 function App (): JSX.Element {
+  const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
+    { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
   return (
     <WeatherProvider>
         <DatapointProvider>
@@ -18,8 +21,11 @@ function App (): JSX.Element {
                 <li>
                     <Link to="/menu">Menu</Link>
                 </li>
-                 <li>
+                <li>
                     <Link to="/manage-datapoint">Manage Datapoint</Link>
+                </li>
+                <li>
+                    <Link to="/manage-organization">Manage Organization</Link>
                 </li>
             </ul>
         </nav>
@@ -27,6 +33,7 @@ function App (): JSX.Element {
             <Route path="/" element={<Home/>}/>
             <Route path="/menu" element={<Menu/>}/>
             <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
+            <Route path="/manage-organization" element={<ManageUsers companyName='KeyHole' users={users} />}/>
         </Routes>
         {/* <Home/> */}
         {/* <Menu/> */}
