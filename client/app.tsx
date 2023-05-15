@@ -4,10 +4,12 @@ import { WeatherProvider } from './src/contexts/WeatherContext/WeatherContext'
 import Home from './src/screens/Home'
 import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
+import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
 
 function App (): JSX.Element {
   return (
     <WeatherProvider>
+        <DatapointProvider>
         <nav>
             <ul>
                 <li>
@@ -28,6 +30,7 @@ function App (): JSX.Element {
         </Routes>
         {/* <Home/> */}
         {/* <Menu/> */}
+        </DatapointProvider>
     </WeatherProvider>
 
   )

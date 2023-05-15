@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-export interface ButtonProps {
+export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text: string
   style?: React.CSSProperties
   onClick?: () => void
@@ -24,7 +24,7 @@ export interface ButtonStyles {
 
 export const buttonStyles: React.CSSProperties = {
   height: 24,
-  width: 100
+  width: 'auto'
 
 }
 
