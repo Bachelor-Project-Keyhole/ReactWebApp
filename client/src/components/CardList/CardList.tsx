@@ -5,7 +5,7 @@ import UserCard from '../UserCard/UserCard'
 export interface CardListProps /* extends NodeList */ {
   cardType: 'DatapointCard' | 'MemberCard'
   data: any[] // probably card
-  editHandler: (key: string) => void
+  editHandler: (key: number) => void
 }
 
 const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps): JSX.Element => {
@@ -15,7 +15,7 @@ const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps
               return (
                     <div key={index}>
                       {card === 'DatapointCard' &&
-                         <DatapointCard title={item.title} value='12345' onEdit={() => { editHandler(item.key) }}></DatapointCard>
+                         <DatapointCard title={item.displayName || item.dataPointKey} value='12345' onEdit={() => { editHandler(index) }}></DatapointCard>
                       }
                       {card === 'MemberCard' &&
                           <UserCard name={item.name} email={item.email} role={item.role} status={item.status}></UserCard>

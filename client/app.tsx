@@ -4,14 +4,15 @@ import { WeatherProvider } from './src/contexts/WeatherContext/WeatherContext'
 import Home from './src/screens/Home'
 import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
+import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
 import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
 
 function App (): JSX.Element {
-
-    const users = [{name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted'},
-        {name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending'}]
+  const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
+    { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
   return (
     <WeatherProvider>
+        <DatapointProvider>
         <nav>
             <ul>
                 <li>
@@ -36,6 +37,7 @@ function App (): JSX.Element {
         </Routes>
         {/* <Home/> */}
         {/* <Menu/> */}
+        </DatapointProvider>
     </WeatherProvider>
 
   )

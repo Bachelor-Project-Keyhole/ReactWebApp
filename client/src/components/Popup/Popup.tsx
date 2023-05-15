@@ -12,7 +12,7 @@ const Popup = ({ onClose, style, ...props }: PopupProps): JSX.Element => {
   return (
     <div style={overlayStyle}>
         <div style={{ ...wrapperStyles, ...style }}>
-          <div style={{ position: 'absolute', top: 5, right: 5 }}>
+          <div style={{ position: 'absolute', top: 20, right: 20 }}>
             <Button text='Close' onClick={onClose}/>
           </div>
             {props.children}
@@ -27,7 +27,7 @@ export const wrapperStyles: React.CSSProperties = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '400px',
-  height: '300px',
+  height: 'auto',
   backgroundColor: '#fff',
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
   zIndex: 1000,
