@@ -6,6 +6,7 @@ import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
 import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
 import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
+import ManageDashboard from './src/screens/ManageDashboard'
 
 function App (): JSX.Element {
   const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
@@ -27,6 +28,9 @@ function App (): JSX.Element {
                 <li>
                     <Link to="/manage-organization">Manage Organization</Link>
                 </li>
+                <li>
+                    <Link to="/manage-dashboard">Manage Dashboard</Link>
+                </li>
             </ul>
         </nav>
         <Routes>
@@ -34,6 +38,7 @@ function App (): JSX.Element {
             <Route path="/menu" element={<Menu/>}/>
             <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
             <Route path="/manage-organization" element={<ManageUsers companyName='KeyHole' users={users} />}/>
+            <Route path="/manage-dashboard" element={<ManageDashboard />}/>
         </Routes>
         {/* <Home/> */}
         {/* <Menu/> */}
