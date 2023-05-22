@@ -12,15 +12,16 @@ const initialGridElements = [
   [
     {
       text: '1',
-      spanHorizontal: '2',
-      spanVertical: '2'
+      spanHorizontal: '1',
+      spanVertical: '1'
+      // component: <GridElement text='1' style={{ height: '100%', width: '100%' }} />
 
     },
     {
       text: '2',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '3',
@@ -38,14 +39,14 @@ const initialGridElements = [
     {
       text: '5',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '6',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '7',
@@ -90,14 +91,14 @@ const initialGridElements = [
     },
     {
       text: '14',
-      spanHorizontal: '4',
-      spanVertical: '2'
+      spanHorizontal: '1',
+      spanVertical: '1'
     },
     {
       text: '15',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '16',
@@ -114,14 +115,14 @@ const initialGridElements = [
     {
       text: '18',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '19',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '20',
@@ -139,14 +140,14 @@ const initialGridElements = [
     {
       text: '22',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '23',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '24',
@@ -164,14 +165,14 @@ const initialGridElements = [
     {
       text: '26',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '27',
       spanHorizontal: '1',
-      spanVertical: '1',
-      blocked: true
+      spanVertical: '1'
+      // blocked: true
     },
     {
       text: '28',
@@ -209,25 +210,41 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
   // probably need to store the coordinates and the size of the grid elements
   // const [newGridElements, setNewGridElements] = React.useState(Array.from({ length: 8 }, () => Array.from({ length: 4 }, () => null)))
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
-  const [newTemplate, setNewTemplate] = React.useState<string>('')
+  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<any>({})// template
 
   const [onHover, setOnHover] = React.useState(false)
   const [onDrop, setOnDrop] = React.useState(false)
   const [heightOfTemplate, setHeightOfTemplate] = React.useState<number>(0)
   const [widthOfTemplate, setWidthOfTemplate] = React.useState<number>(0)
 
-  function handleOnDragStart (e: React.DragEvent, template: string, width: number, height: number): void {
+  const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
     console.log('drag start')
     e.dataTransfer.setData('template', template)
-    setWidthOfTemplate(width)
-    setHeightOfTemplate(height)
+    const newtemplate = {
+      text: template + width.toString() + height.toString(),
+      spanHorizontal: height.toString(),
+      spanVertical: width.toString(),
+      component: <GridElement
+        text={template + width.toString() + height.toString()}
+        style={{
+          height: '100%',
+          width: '100%'
+        }} />,
+      blocked: false
+    }
+    // setWidthOfTemplate(width)
+    // setHeightOfTemplate(height)
+    setDraggedTemplateTemplate(newtemplate)
+    console.log('NEWTEMPLATE: ' + newtemplate.spanHorizontal + ' ' + newtemplate.spanVertical)
+
     // Save the rest of the template elsewhere
   }
+  , [])
 
-  const handleOnDrop = (e: any, i: number, j: number, horizontalSpan: number, verticalSpan: number): void => {
+  const handleOnDrop = React.useCallback((e: any, i: number, j: number): void => {
     console.log('drop', i, j)
 
-    setNewTemplate(e.dataTransfer.getData('template'))
+    setDraggedTemplateTemplate(e.dataTransfer.getData('template'))
     console.log('drop', e.dataTransfer.getData('template'))
 
     const tempArray = [...newGridElements]
@@ -239,23 +256,30 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
     //    height: '100%',
     //    maxWidth: `${widthOfTemplate}00%`
     //  }} />
-    tempArray[i][j] = {
-      text: newTemplate + widthOfTemplate.toString() + heightOfTemplate.toString(),
-      spanHorizontal: horizontalSpan.toString(),
-      spanVertical: verticalSpan.toString()
-    }
-    if (horizontalSpan > 1) {
-      for (let k = 1; k < horizontalSpan; k++) {
-        tempArray[i + k][j].blocked = true
+
+    console.log('draaaaaged: ' + draggedTemplate.spanHorizontal)
+    if (draggedTemplate.spanHorizontal > 1 || draggedTemplate.spanVertical > 1) {
+      for (let k = 0; k < draggedTemplate.spanHorizontal; k++) {
+        for (let l = 0; l < draggedTemplate.spanVertical; l++) {
+          tempArray[i + k][j + l].blocked = true
+        }
       }
     }
-    if (verticalSpan > 1) {
-      for (let k = 1; k < verticalSpan; k++) {
-        tempArray[i][j + k].blocked = true
-      }
-    }
+    tempArray[i][j] = draggedTemplate
+
+    // if (draggedTemplate.spanHorizontal > 1) {
+    //   for (let k = 1; k < draggedTemplate.spanHorizontal; k++) {
+    //     tempArray[i + k][j].blocked = true
+    //   }
+    // }
+    // if (draggedTemplate.spanVertical > 1) {
+    //   for (let k = 1; k < draggedTemplate.spanVertical; k++) {
+    //     tempArray[i][j + k].blocked = true
+    //   }
+    // }
     setNewGridElements(tempArray)
   }
+  , [newGridElements, draggedTemplate])
 
   function handleDragOver (e: any): void {
     e.preventDefault()
@@ -312,8 +336,10 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                         <div key={i} style={{
                           gridArea: `${j + 1} / ${i + 1} / span ${row[j].spanVertical} / span ${row[j].spanHorizontal}`,
                           ...gridElementStyle
-                        }} onDrop={(e) => { handleOnDrop(e, i, j, 2, 3) } } onDragOver={ handleDragOver }>
-                          {row[j].text}
+                        }} onDrop={(e) => { handleOnDrop(e, i, j) } }
+                          onDragOver={ handleDragOver }
+                          onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }}>
+                          {row[j].component || row[j].text}
                         </div>
                         )
 
@@ -328,8 +354,8 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                         <div key={i} style={{
                           gridArea: `${j + 2} / ${i + 1} / span ${row[j + 1].spanVertical} / span ${row[j + 1].spanHorizontal}`,
                           ...gridElementStyle
-                        }} onDrop={(e) => { handleOnDrop(e, i, j + 1, 1, 1) } } onDragOver={ handleDragOver }>
-                          {row[j + 1].text}
+                        }} onDrop={(e) => { handleOnDrop(e, i, j + 1) } } onDragOver={ handleDragOver }>
+                          {row[j + 1].component || row[j + 1].text}
                                     </div>
                         )
                       : (
@@ -343,8 +369,8 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                         <div key={i} style={{
                           gridArea: `${j + 3} / ${i + 1}`,
                           ...gridElementStyle
-                        }} onDrop={(e) => { handleOnDrop(e, i, j + 2, 1, 2) } } onDragOver={ handleDragOver }>
-                          {row[j + 2].text}
+                        }} onDrop={(e) => { handleOnDrop(e, i, j + 2) } } onDragOver={ handleDragOver }>
+                         {row[j + 2].component || row[j + 2].text}
                                     </div>
                         )
                       : (
@@ -357,8 +383,8 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                         <div key={i} style={{
                           gridArea: `${j + 4} / ${i + 1}`,
                           ...gridElementStyle
-                        }} onDrop={(e) => { handleOnDrop(e, i, j + 3, 2, 1) } } onDragOver={ handleDragOver }>
-                          {row[j + 3].text}
+                        }} onDrop={(e) => { handleOnDrop(e, i, j + 3) } } onDragOver={ handleDragOver }>
+                          {row[j + 3].component || row[j + 3].text}
                                     </div>
                   )
                 })}

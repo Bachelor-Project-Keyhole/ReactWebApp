@@ -20,8 +20,8 @@ export const wrapperStyles: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   height: '100%',
-  width: '100%px',
-  margin: '8px',
+  width: '100%',
+  // margin: '8px',
   backgroundColor: '#f100f1'
 
 }
