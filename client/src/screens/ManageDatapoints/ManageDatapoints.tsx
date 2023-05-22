@@ -25,7 +25,7 @@ export interface ManageDatapointsProps {
 }
 
 const ManageDatapoints = ({ style, ...props }: any): any => {
-  const { getDatapoints, patchDatapoint } = useDatapointContext()
+  const { getDatapoints, patchDatapoint, postDatapoint } = useDatapointContext()
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
   const [editModal, setEditModal] = React.useState(false)
   const [initialValues, setInitialValues] = React.useState({
@@ -69,7 +69,11 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
       dataPointKey: values.dataPointKey,
       displayName: values.displayName,
       directionIsUp: values.directionIsUp === 'true',
-      comparisonIsAbsolute: values.comparisonIsAbsolute === 'true'
+      comparisonIsAbsolute: values.comparisonIsAbsolute === 'true',
+      formula: {
+        operation: values.operation,
+        factor: toInteger(values.factor)
+      }
     }
     console.log('DATOPOINT', datapoint)
     if (submitAction === 'save') {
@@ -84,12 +88,12 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
     } else if (submitAction === 'saveAsNew') {
       console.log('SAVE AS NEW')
 
-      // try {
-      //   const response = await postDatapoint(datapoint)
-      //   console.log('RESPONSE', response)
-      // } catch (error) {
-      //   console.log('error', error)
-      // }
+      try {
+        const response = await postDatapoint(datapoint)
+        console.log('RESPONSE', response)
+      } catch (error) {
+        console.log('error', error)
+      }
     }
   }
 
@@ -178,19 +182,19 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div role='group' aria-labelledby='formula-group'>
                   <SubHeader text='Add Formula' />
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <Field name="formula" type="radio" value="none" />
+                      <Field name="operation" type="radio" value="none" />
                       <Description text='None' style={{ margin: 0 }} />
-                      <Field name="formula" type="radio" value="multiply" />
+                      <Field name="operation" type="radio" value="multiply" />
                       <Description text='Multiply' style={{ margin: 0 }} />
-                      <Field name="formula" type="radio" value="divide"/>
+                      <Field name="operation" type="radio" value="divide"/>
                       <Description text='Divide' style={{ margin: 0 }} />
-                      <Field name="formula" type="radio" value="add" />
+                      <Field name="operation" type="radio" value="add" />
                       <Description text='Add' style={{ margin: 0 }} />
-                      <Field name="formula" type="radio" value="substract"/>
+                      <Field name="operation" type="radio" value="substract"/>
                       <Description text='Substract' style={{ margin: 0 }} />
                     </div>
                     <Divider />
-                    <Field name="formula" type="input" value="none"/>
+                    <Field name="factor" type="input" placeholder="none"/>
                   </div>
                   <Divider size={2} />
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>

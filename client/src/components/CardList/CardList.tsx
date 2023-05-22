@@ -15,7 +15,7 @@ const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps
               return (
                     <div key={index}>
                       {card === 'DatapointCard' &&
-                         <DatapointCard title={item.displayName || item.dataPointKey} value='12345' onEdit={() => { editHandler(index) }}></DatapointCard>
+                         <DatapointCard title={item.displayName || item.dataPointKey} value={item.latestValue} onEdit={() => { editHandler(index) }}></DatapointCard>
                       }
                       {card === 'MemberCard' &&
                           <UserCard name={item.name} email={item.email} role={item.role} status={item.status}></UserCard>
