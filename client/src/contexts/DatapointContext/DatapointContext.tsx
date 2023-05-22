@@ -25,12 +25,14 @@ export interface IDatapointContext {
   datapoints: any[]
   getDatapoints: () => Promise<any>
   patchDatapoint: (datapoint: any) => Promise<any>
+  postDatapoint: (datapoint: any) => Promise<any>
 }
 
 export const DatapointContext = React.createContext<IDatapointContext>({
   datapoints: [],
   getDatapoints: async () => {},
-  patchDatapoint: async (datapoint: any) => {}
+  patchDatapoint: async (datapoint: any) => {},
+  postDatapoint: async (datapoint: any) => {}
 })
 
 export const DatapointProvider: React.FC<{ children: any }> = props => {
@@ -39,7 +41,7 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
       const response = await axios({
         method: 'get',
         // url: 'http://localhost:5161/Datapoint/645cdf7dfb420436aebe0559'
-        url: 'https://localhost:7173/api/v1/datapoint/645cdf7dfb420436aebe0559'
+        url: 'https://localhost:7173/api/v1/datapoint/646791352d33a03d8d495c2e'
         // url: 'https://jsonplaceholder.typicode.com/todos/1'
       })
 
@@ -63,8 +65,21 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
     }
   }, [])
 
+  const postDatapoint = React.useCallback(async (datapoint: any) => {
+    try {
+      const response = await axios.post(
+        'https://localhost:7173/api/v1/datapoint',
+        datapoint
+      )
+      const newDatapoint = response.data
+      console.log('NEW DATAPOINT', newDatapoint)
+    } catch (error) {
+      console.error('Error creating datapoint', error)
+    }
+  }, [])
+
   return (
-        <DatapointContext.Provider value={{ datapoints: [], getDatapoints, patchDatapoint }}>
+        <DatapointContext.Provider value={{ datapoints: [], getDatapoints, patchDatapoint, postDatapoint }}>
             {props.children}
         </DatapointContext.Provider>
   )
