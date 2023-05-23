@@ -1,29 +1,45 @@
-import * as React from 'react';
-import { Link } from 'react-router-dom';
+import * as React from 'react'
+import Card from '../Card'
+import Button from '../Button'
 
-const Navbar = () => {
-  const navbarStyle = {
-    backgroundColor: '#f8f8f8',
-    padding: '10px',
+export interface UserCardProps {
+    name: string
+    email: string
+    role: string
+    status: string
+}
+
+const UserCard = ({ name, email, role, status, ...props }: UserCardProps): JSX.Element => {
+    return (
+        <Card style={{ ...props }}>
+            <div style={{ ...innerStyles}}>
+                <div style={{ ...nameStyles }}>{name}</div>
+                <div style={{ ...fieldStyles }}>{email}</div>
+                <div style={{ ...fieldStyles }}>{role}</div>
+                <div style={{ ...fieldStyles }}>{status}</div>
+            </div>
+        </Card>
+    )
+}
+
+export const innerStyles: React.CSSProperties = {
     display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  };
+    width: '100%'
+}
 
-  const linkStyle = {
-    marginRight: '20px',
-    color: '#333',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    transition: 'background-color 0.3s ease-in-out',
-  };
+export const nameStyles: React.CSSProperties = {
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
+  
+  export const fieldStyles: React.CSSProperties = {
+    fontSize: 14
+  }
 
-  const linkHoverStyle = {
-    ...linkStyle,
-    backgroundColor: 'lightgrey',
-  };
-
-  const buttonStyles = {
+export const buttonStyles: React.CSSProperties = {
     width: 100,
     height: 24,
     backgroundColor: 'lightgrey',
@@ -32,30 +48,7 @@ const Navbar = () => {
     fontSize: 16,
     fontWeight: 'bold',
     cursor: 'pointer',
-    marginLeft: 16,
-  };
+    marginLeft: 16
+}
 
-  return (
-    <nav style={navbarStyle}>
-      <div>
-        <Link to="/" style={linkStyle} activeStyle={linkHoverStyle}>
-          Home
-        </Link>
-        <Link to="/menu" style={linkStyle} activeStyle={linkHoverStyle}>
-          Menu
-        </Link>
-        <Link to="/manage-datapoint" style={linkStyle} activeStyle={linkHoverStyle}>
-          Manage Datapoint
-        </Link>
-        <Link to="/manage-organization" style={linkStyle} activeStyle={linkHoverStyle}>
-          Manage Organization
-        </Link>
-      </div>
-      <div>
-        <button style={buttonStyles}>Logout</button>
-      </div>
-    </nav>
-  );
-};
-
-export default Navbar;
+export default UserCard
