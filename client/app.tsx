@@ -7,7 +7,9 @@ import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
 import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
 import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
 import Navbar from './src/components/NavBar/NavBar'
-
+import Login from './src/components/Login/Login';
+import RegisterUser from './src/components/Register/Register';
+import Profile from './src/screens/Profile/Profile'
 
 function App (): JSX.Element {
     const links = [
@@ -29,6 +31,9 @@ function App (): JSX.Element {
             <Route path="/menu" element={<Menu/>}/>
             <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
             <Route path="/manage-organization" element={<ManageUsers companyName='KeyHole' users={users} />}/>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<RegisterUser isNewCompany={true} />} />
+            <Route path='/profile' element={<Profile></Profile>} />
         </Routes>
         {/* <Home/> */}
         {/* <Menu/> */}
@@ -37,4 +42,5 @@ function App (): JSX.Element {
 
   )
 }
+
 export default App

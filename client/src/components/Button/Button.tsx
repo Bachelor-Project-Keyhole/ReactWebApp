@@ -11,7 +11,7 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
 
 const Button = ({ icon, text, solid, style, onClick, type }: ButtonProps): JSX.Element => {
   return (
-        <button style={{ ...buttonStyles, ...style }} onClick={onClick}>
+        <button style={{ ...buttonStyles, ...style }} onClick={onClick} type={type} >
             {icon}
             {text}
         </button>

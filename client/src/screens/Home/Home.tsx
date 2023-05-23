@@ -7,12 +7,15 @@ import SubHeader from '../../components/SubHeader'
 import Title from '../../components/Title'
 import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
 import Popup from '../../components/Popup'
+import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 
 const Home = ({ ...props }: any): any => {
   const { temperature, getTemperature } = useWeatherContext()
   // const [temp, setTemp] = React.useState(0)
 
   console.log('HI')
+
+  const user = authorizationHeader
 
   const handleTemperature = React.useCallback(async () => {
     console.log('HANDLETEMP')
@@ -35,6 +38,7 @@ const Home = ({ ...props }: any): any => {
       <Title text="Home" />
       <Header text="Header" />
       <SubHeader text="SubHeader" />
+      <SubHeader text={ user.name } />
       <Description text="Description Description Description Description Description Description Description Description" />
       <Button text="Button" icon={<PlusIcon/>} style={{ backgroundColor: 'black', color: 'white' }} />
       <Button text="Button" icon={<PlusIcon color="red"/>} />
