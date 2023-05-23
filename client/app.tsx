@@ -6,30 +6,25 @@ import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
 import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
 import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
+import Navbar from './src/components/NavBar/NavBar'
+
 
 function App (): JSX.Element {
+    const links = [
+        { to: '/menu', text: 'Menu' },
+        { to: '/manage-datapoint', text: 'Manage Datapoint' },
+        { to: '/manage-organization', text: 'Manage Organization' },
+        { to: '/', text: 'Logout' },
+      ];
   const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
     { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
   return (
     <WeatherProvider>
         <DatapointProvider>
-        <nav>
-            <ul>
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                <li>
-                    <Link to="/menu">Menu</Link>
-                </li>
-                <li>
-                    <Link to="/manage-datapoint">Manage Datapoint</Link>
-                </li>
-                <li>
-                    <Link to="/manage-organization">Manage Organization</Link>
-                </li>
-            </ul>
-        </nav>
-        <Routes>
+            <Navbar links={links} />
+      {/* Rest of your application */}
+    
+       <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/menu" element={<Menu/>}/>
             <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
