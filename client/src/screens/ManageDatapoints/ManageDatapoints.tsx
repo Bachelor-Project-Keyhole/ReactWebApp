@@ -9,8 +9,8 @@ import DatapointCard from '../../components/DatapointCard/DatapointCard'
 
 import { Formik, Field, Form, ErrorMessage, type FormikHelpers, type FormikValues } from 'formik'
 import * as Yup from 'yup'
-import { get, toInteger } from 'lodash'
-import { useDatapointContext, type IDatapoint } from '../../contexts/DatapointContext/DatapointContext'
+import { get, set, toInteger } from 'lodash'
+import { useDatapointContext, type IDatapoint, initialDatapointForm } from '../../contexts/DatapointContext/DatapointContext'
 import SubHeader from '../../components/SubHeader'
 import Description from '../../components/Description'
 
@@ -28,38 +28,38 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
   const { getDatapoints, patchDatapoint, postDatapoint } = useDatapointContext()
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
   const [editModal, setEditModal] = React.useState(false)
-  const [initialValues, setInitialValues] = React.useState({
-    displayName: 'ss',
-    directionIsUp: 'false',
-    comparisonIsAbsolute: 'false',
-    dataPointKey: '',
-    id: 0,
-    organizationId: 0
-  })
+  const [initialValues, setInitialValues] = React.useState(initialDatapointForm)
+
   let submitAction: string | undefined
 
   const handleGetDatapoints = React.useCallback(async () => {
     try {
       const response = await getDatapoints()
       setDatapoints(response)
-      // setDatapoints([
-      //   { id: 1, organizationId: 1, dataPointKey: 'test1', displayName: 'testtest1', directionIsUp: true, comparisonIsAbsolute: true },
-      //   { id: 2, organizationId: 2, dataPointKey: 'test2', displayName: 'testtest2', directionIsUp: false, comparisonIsAbsolute: false },
-      //   { id: 3, organizationId: 3, dataPointKey: 'test3', displayName: 'testtest3', directionIsUp: true, comparisonIsAbsolute: false }
-      // ])
-      console.log('RESPONSE', response)
     } catch (error) {
       console.log('error', error)
     }
   }
   , [getDatapoints])
 
-  const datapointHandler = (key: number): void => {
-    console.log('KEY: ' + key)
-    // setPopupKey(key)
+  const initializeForm = React.useCallback((index: number): void => {
+    setInitialValues({
+      displayName: datapoints[index].displayName || datapoints[index].dataPointKey,
+      directionIsUp: String(datapoints[index].directionIsUp),
+      comparisonIsAbsolute: String(datapoints[index].comparisonIsAbsolute),
+      dataPointKey: datapoints[index].dataPointKey,
+      id: datapoints[index].id,
+      organizationId: datapoints[index].organizationId,
+      latestValue: datapoints[index].latestValue,
+      operation: datapoints[index].formula.operation,
+      factor: datapoints[index].formula.factor
+    })
+  }, [datapoints])
+
+  const datapointHandler = React.useCallback((key: number): void => {
     initializeForm(key)
     setEditModal(true)
-  }
+  }, [initializeForm, setEditModal])
 
   const onFormSubmit = async (values: any): Promise<any> => {
     console.log('VALUES', values)
@@ -77,37 +77,24 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
     }
     console.log('DATOPOINT', datapoint)
     if (submitAction === 'save') {
-      console.log('SAVE')
-
       try {
+        setEditModal(false)
         const response = await patchDatapoint(datapoint)
+        handleGetDatapoints()
         console.log('RESPONSE', response)
       } catch (error) {
         console.log('error', error)
       }
     } else if (submitAction === 'saveAsNew') {
-      console.log('SAVE AS NEW')
-
       try {
+        setEditModal(false)
         const response = await postDatapoint(datapoint)
+        handleGetDatapoints()
         console.log('RESPONSE', response)
       } catch (error) {
         console.log('error', error)
       }
     }
-  }
-
-  const initializeForm = (index: number): void => {
-    console.log('INITIALIZE FORM' + index)
-
-    setInitialValues({
-      displayName: datapoints[index].displayName || datapoints[index].dataPointKey,
-      directionIsUp: String(datapoints[index].directionIsUp),
-      comparisonIsAbsolute: String(datapoints[index].comparisonIsAbsolute),
-      dataPointKey: datapoints[index].dataPointKey,
-      id: datapoints[index].id,
-      organizationId: datapoints[index].organizationId
-    })
   }
 
   React.useLayoutEffect(() => {
@@ -121,8 +108,8 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
             <div style={{ ...innerStyles }}>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Title text={'Manage Datapoints'}/>
-                <Button text={'+'} />
-                <button onClick={handleGetDatapoints}>Get Datapoints</button>
+                {/* <Button text={'+'} />
+                <button onClick={handleGetDatapoints}>Get Datapoints</button> */}
               </div>
                 <div style={{ backgroundColor: 'lightgrey', height: 24 }}>searchbar</div>
                 <Divider />
@@ -134,7 +121,9 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
             </div>
             </div>
             {editModal &&
-            <Popup onClose={() => { setEditModal(false) }}>
+            <Popup onClose={() => {
+              setEditModal(false)
+            }}>
               <Header text='Add Datapoint' style={{ marginTop: 0 }}/>
               <Formik initialValues={initialValues} onSubmit={function (
                 values: FormikValues,
@@ -147,7 +136,7 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                       <SubHeader text='Display Name' />
-                      <Field name="displayName" value={initialValues.displayName} />
+                      <Field name="displayName" placeholder={initialValues.displayName}/>
                       <ErrorMessage name="displayName" />
                     </div>
                     <div>
@@ -182,19 +171,19 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div role='group' aria-labelledby='formula-group'>
                   <SubHeader text='Add Formula' />
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <Field name="operation" type="radio" value="none" />
+                      <Field name="operation" type="radio" value="None" />
                       <Description text='None' style={{ margin: 0 }} />
-                      <Field name="operation" type="radio" value="multiply" />
+                      <Field name="operation" type="radio" value="Multiply" />
                       <Description text='Multiply' style={{ margin: 0 }} />
-                      <Field name="operation" type="radio" value="divide"/>
+                      <Field name="operation" type="radio" value="Divide"/>
                       <Description text='Divide' style={{ margin: 0 }} />
-                      <Field name="operation" type="radio" value="add" />
+                      <Field name="operation" type="radio" value="Add" />
                       <Description text='Add' style={{ margin: 0 }} />
-                      <Field name="operation" type="radio" value="substract"/>
+                      <Field name="operation" type="radio" value="Subtract"/>
                       <Description text='Substract' style={{ margin: 0 }} />
                     </div>
                     <Divider />
-                    <Field name="factor" type="input" placeholder="none"/>
+                    <Field name="factor" placeholder={values.factor} />
                   </div>
                   <Divider size={2} />
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
