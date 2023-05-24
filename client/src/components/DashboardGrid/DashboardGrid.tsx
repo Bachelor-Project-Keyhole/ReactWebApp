@@ -1,6 +1,32 @@
 import * as React from 'react'
+import { useState } from 'react'
 import GridElement from '../GridElement/GridElement'
 import { padding } from 'polished'
+import ResizableBlock from '../ResizableBlock/ResizableBlock'
+import { set } from 'lodash'
+
+interface Block {
+  x: number
+  y: number
+  width: number
+  height: number
+  component?: React.ReactNode
+}
+
+const BlockComponent: React.FC<Block> = ({ x, y, width, height, component }) => {
+  const style: React.CSSProperties = {
+    gridColumn: `${x + 1} / span ${width}`,
+    gridRow: `${y + 1} / span ${height}`,
+    backgroundColor: 'red',
+    border: '1px solid black'
+  }
+
+  return (
+    <div style={style} >
+      {component}
+    </div>
+  )
+}
 
 export interface DashboardGridProps {
   style?: React.CSSProperties
@@ -216,10 +242,10 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
   const [onDrop, setOnDrop] = React.useState(false)
   const [heightOfTemplate, setHeightOfTemplate] = React.useState<number>(0)
   const [widthOfTemplate, setWidthOfTemplate] = React.useState<number>(0)
+  const [blocks, setBlocks] = useState<Block[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
 
   const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
-    console.log('drag start')
-    e.dataTransfer.setData('template', template)
+    // e.dataTransfer.setData('template', template)
     const newtemplate = {
       text: template + width.toString() + height.toString(),
       spanHorizontal: height.toString(),
@@ -232,12 +258,7 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
         }} />,
       blocked: false
     }
-    // setWidthOfTemplate(width)
-    // setHeightOfTemplate(height)
     setDraggedTemplateTemplate(newtemplate)
-    console.log('NEWTEMPLATE: ' + newtemplate.spanHorizontal + ' ' + newtemplate.spanVertical)
-
-    // Save the rest of the template elsewhere
   }
   , [])
 
@@ -248,33 +269,28 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
     console.log('drop', e.dataTransfer.getData('template'))
 
     const tempArray = [...newGridElements]
-    // tempArray[i][j] = <GridElement
-    //  text={newTemplate + widthOfTemplate.toString() + heightOfTemplate.toString()}
-    //  style={{
+    const tempBlocks = [...blocks]
+    tempBlocks.push({
+      x: i,
+      y: j,
+      width: 1,
+      height: 1,
+      component:
+        <GridElement
+          text={draggedTemplate.text}
+          style={{
+            height: '100%',
+            width: '100%'
+          }} />
+    })
+    setBlocks(tempBlocks)
 
-    //    // height: `${heightOfTemplate}00%`,
-    //    height: '100%',
-    //    maxWidth: `${widthOfTemplate}00%`
-    //  }} />
-
-    console.log('draaaaaged: ' + draggedTemplate.spanHorizontal)
-    if (draggedTemplate.spanHorizontal > 1 || draggedTemplate.spanVertical > 1) {
-      for (let k = 0; k < draggedTemplate.spanHorizontal; k++) {
-        for (let l = 0; l < draggedTemplate.spanVertical; l++) {
-          tempArray[i + k][j + l].blocked = true
-        }
-      }
-    }
-    tempArray[i][j] = draggedTemplate
-
-    // if (draggedTemplate.spanHorizontal > 1) {
-    //   for (let k = 1; k < draggedTemplate.spanHorizontal; k++) {
-    //     tempArray[i + k][j].blocked = true
-    //   }
-    // }
-    // if (draggedTemplate.spanVertical > 1) {
-    //   for (let k = 1; k < draggedTemplate.spanVertical; k++) {
-    //     tempArray[i][j + k].blocked = true
+    // This will be removed when the resize is done
+    // if (draggedTemplate.spanHorizontal > 1 || draggedTemplate.spanVertical > 1) {
+    //   for (let k = 0; k < draggedTemplate.spanHorizontal; k++) {
+    //     for (let l = 0; l < draggedTemplate.spanVertical; l++) {
+    //       tempArray[i + k][j + l].blocked = true
+    //     }
     //   }
     // }
     setNewGridElements(tempArray)
@@ -293,44 +309,41 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
 
   const j = 0
 
+  const handleResize = (index: number, newWidth: number, newHeight: number) => {
+    setBlocks((prevBlocks: any) => {
+      const updatedBlocks = [...prevBlocks]
+      updatedBlocks[index] = { ...updatedBlocks[index], width: newWidth, height: newHeight }
+      if (newWidth > 1 || newHeight > 1) {
+        for (let k = 0; k < newWidth; k++) {
+          for (let l = 0; l < newHeight; l++) {
+            newGridElements[updatedBlocks[index].x + k][updatedBlocks[index].y + l].blocked = true
+          }
+        }
+      }
+      if (prevBlocks[index].width > newWidth || prevBlocks[index].height > newHeight) {
+        for (let k = 0; k < prevBlocks[index].width; k++) {
+          for (let l = 0; l < prevBlocks[index].height; l++) {
+            newGridElements[updatedBlocks[index].x + k][updatedBlocks[index].y + l].blocked = false
+          }
+        }
+      }
+      return updatedBlocks
+    })
+  }
+
   return (
         <div style={{ ...wrapperStyles, ...style }}>
             <div style={{ ...innerStyles }}>
-                {/* {newGridElements.map((row, i) => {
-                  return (
-                        // <div key={i} style={{ display: 'flex', flexDirection: 'row', height: '25%' }}>
-                        //       {row.map((col, j) => {
-                        //         return (
-                        //             <div key={j} style={{ ...elementStyles }} onDrop={(e) => { handleOnDrop(e, i, j) } } onDragOver={ handleDragOver }>
-                        //                   {col}
-                        //             </div>
-                        //         )
-                        //       })}
-                        // </div>
-                        <div key={i} style={{
-                          gridArea: `${i + 1}`,
-                          // gridColumn: `${i + 1} / span ${25}`,
-                          // gridRow: `${i + 1} / span ${25}`,
-                          ...gridElementStyle
-                        }} />
-                  )
-                })
-                } */}
-                {/* newGridElements.map((row, i) => {
-                  return (
-                        <div key={i} style={{
-                          gridRow: `${j} / span 1`,
-                          gridColumn: `${i} / span 1`,
-                          ...gridElementStyle
-                        }} onDrop={(e) => { handleOnDrop(e, i, 1) } } onDragOver={ handleDragOver }>
+                {blocks.map((block, index) => (
+                  <BlockComponent key={index} {...block} />
+                ))}
 
-                                    </div>
-                  )
-                }) */}
+                {blocks.map((block, index) => (
+                  <ResizableBlock key={index} index={index} {...block} onResize={handleResize} />
+                ))}
+
                 {newGridElements.map((row, i) => {
                   return (
-                  // console.log(row[j]);
-
                     row[j].blocked !== true
                       ? (
                         <div key={i} style={{
@@ -338,7 +351,8 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                           ...gridElementStyle
                         }} onDrop={(e) => { handleOnDrop(e, i, j) } }
                           onDragOver={ handleDragOver }
-                          onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }}>
+                          // onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }}
+                          >
                           {row[j].component || row[j].text}
                         </div>
                         )
@@ -367,7 +381,7 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                     row[j + 2].blocked !== true
                       ? (
                         <div key={i} style={{
-                          gridArea: `${j + 3} / ${i + 1}`,
+                          gridArea: `${j + 3} / ${i + 1} / span ${row[j + 2].spanVertical} / span ${row[j + 2].spanHorizontal}`,
                           ...gridElementStyle
                         }} onDrop={(e) => { handleOnDrop(e, i, j + 2) } } onDragOver={ handleDragOver }>
                          {row[j + 2].component || row[j + 2].text}
@@ -381,7 +395,7 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
                 {newGridElements.map((row, i) => {
                   return (
                         <div key={i} style={{
-                          gridArea: `${j + 4} / ${i + 1}`,
+                          gridArea: `${j + 4} / ${i + 1} / span ${row[j + 3].spanVertical} / span ${row[j + 3].spanHorizontal}`,
                           ...gridElementStyle
                         }} onDrop={(e) => { handleOnDrop(e, i, j + 3) } } onDragOver={ handleDragOver }>
                           {row[j + 3].component || row[j + 3].text}
@@ -446,11 +460,12 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
 
             </div>
             <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template1*1', 1, 1) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
-                        Template1*1
-                  </div>
-                  <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
-                        Template2*2
-                  </div>
+                  Template1*1
+            </div>
+            <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
+                  Template2*2
+            </div>
+
         </div>
   )
 }
@@ -507,7 +522,7 @@ export const gridElementStyle: React.CSSProperties = {
   // backgroundColor: 'red',
   border: '1px dashed black',
   zIndex: 1,
-  cursor: 'se-resize',
+  // cursor: 'se-resize',
   padding: 5,
   margin: 2
   // height: '12.5%',
