@@ -10,7 +10,7 @@ import DatapointCard from '../../components/DatapointCard/DatapointCard'
 import { Formik, Field, Form, ErrorMessage, type FormikHelpers, type FormikValues } from 'formik'
 import * as Yup from 'yup'
 import { get, toInteger } from 'lodash'
-import { useDatapointContext, type IDatapoint } from '../../contexts/DatapointContext/DatapointContext'
+import { useDatapointContext, type IDatapoint, initialDatapoint } from '../../contexts/DatapointContext/DatapointContext'
 import SubHeader from '../../components/SubHeader'
 import Description from '../../components/Description'
 
@@ -28,14 +28,8 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
   const { getDatapoints, patchDatapoint, postDatapoint } = useDatapointContext()
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
   const [editModal, setEditModal] = React.useState(false)
-  const [initialValues, setInitialValues] = React.useState({
-    displayName: 'ss',
-    directionIsUp: 'false',
-    comparisonIsAbsolute: 'false',
-    dataPointKey: '',
-    id: 0,
-    organizationId: 0
-  })
+  const [initialValues, setInitialValues] = React.useState(initialDatapoint)
+
   let submitAction: string | undefined
 
   const handleGetDatapoints = React.useCallback(async () => {
@@ -102,11 +96,17 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
 
     setInitialValues({
       displayName: datapoints[index].displayName || datapoints[index].dataPointKey,
-      directionIsUp: String(datapoints[index].directionIsUp),
-      comparisonIsAbsolute: String(datapoints[index].comparisonIsAbsolute),
+      directionIsUp: datapoints[index].directionIsUp,
+      comparisonIsAbsolute: datapoints[index].comparisonIsAbsolute,
       dataPointKey: datapoints[index].dataPointKey,
       id: datapoints[index].id,
-      organizationId: datapoints[index].organizationId
+      organizationId: datapoints[index].organizationId,
+      latestValue: datapoints[index].latestValue,
+      formula: {
+        operation: datapoints[index].formula.operation,
+        factor: datapoints[index].formula.factor
+      }
+
     })
   }
 

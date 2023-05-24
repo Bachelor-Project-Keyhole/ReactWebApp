@@ -11,8 +11,9 @@ export interface CardListProps /* extends NodeList */ {
 const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps): JSX.Element => {
   return (
         <div>
-            {data.map((item, index) => {
-              return (
+            {data
+              ? data.map((item, index) => {
+                return (
                     <div key={index}>
                       {card === 'DatapointCard' &&
                          <DatapointCard title={item.displayName || item.dataPointKey} value={item.latestValue} onEdit={() => { editHandler(index) }}></DatapointCard>
@@ -21,8 +22,10 @@ const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps
                           <UserCard name={item.name} email={item.email} role={item.role} status={item.status}></UserCard>
                       }
                     </div>
-              )
-            })}
+                )
+              })
+              : <div>no data</div>
+          }
         </div>
   )
 }
