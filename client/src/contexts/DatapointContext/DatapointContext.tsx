@@ -35,6 +35,30 @@ export const initialDatapoint: IDatapoint = {
   }
 }
 
+export interface IDatapointForm {
+  id: number
+  organizationId: number
+  // will be renamed
+  dataPointKey: string
+  displayName: string
+  directionIsUp: string
+  comparisonIsAbsolute: string
+  latestValue: number
+  operation: string
+  factor: number
+}
+
+export const initialDatapointForm: IDatapointForm = {
+  id: 0,
+  organizationId: 0,
+  dataPointKey: '',
+  displayName: '',
+  directionIsUp: 'false',
+  comparisonIsAbsolute: 'false',
+  latestValue: 0,
+  operation: 'None',
+  factor: 0
+}
 export interface IDatapointContext {
   datapoints: any[]
   getDatapoints: () => Promise<any>
