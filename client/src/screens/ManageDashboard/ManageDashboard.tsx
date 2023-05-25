@@ -2,6 +2,7 @@ import * as React from 'react'
 import DashboardGrid from '../../components/DashboardGrid/DashboardGrid'
 import Block, { type BlockProps } from '../../components/Block/Block'
 import GridElement from '../../components/GridElement'
+import Button from '../../components/Button/Button'
 
 export interface ManageDashboardProps {
   style?: React.CSSProperties
@@ -66,6 +67,11 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
                     Template1*1
                   </div>
                 </div>
+
+            </div>
+            <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Button text='Save' onClick={() => {}} />
+            <Button text='Cancel' onClick={() => {}} />
             </div>
         </div>
   )
