@@ -9,8 +9,10 @@ export interface IFormula {
   factor: number
 }
 
+const API_URL = 'https://localhost:7173/api/v1'
+
 export interface IDatapoint {
-  id: number
+  id: string
   organizationId: number
   // will be renamed
   dataPointKey: string
@@ -22,7 +24,7 @@ export interface IDatapoint {
 }
 
 export const initialDatapoint: IDatapoint = {
-  id: 0,
+  id: '',
   organizationId: 0,
   dataPointKey: '',
   displayName: '',
@@ -36,7 +38,7 @@ export const initialDatapoint: IDatapoint = {
 }
 
 export interface IDatapointForm {
-  id: number
+  id: string
   organizationId: number
   // will be renamed
   dataPointKey: string
@@ -49,7 +51,7 @@ export interface IDatapointForm {
 }
 
 export const initialDatapointForm: IDatapointForm = {
-  id: 0,
+  id: '',
   organizationId: 0,
   dataPointKey: '',
   displayName: '',
@@ -59,18 +61,39 @@ export const initialDatapointForm: IDatapointForm = {
   operation: 'None',
   factor: 0
 }
+
+export interface IDatapointEntry {
+  value: number,
+  timestamp: string
+}
+
+export interface ILatestEntry {
+  latestValue: number,
+  change: number,
+  directionIsUp: boolean,
+  comparisonIsAbsolute: boolean
+}
+
 export interface IDatapointContext {
   datapoints: any[]
   getDatapoints: () => Promise<any>
   patchDatapoint: (datapoint: any) => Promise<any>
   postDatapoint: (datapoint: any) => Promise<any>
+  getDatapointEntries: (
+    datapointId:string, period: number, timeUnit: string) => Promise<any>
+  getLatestEntryWithChange: (
+    datapointId:string, period: number, timeUnit: string) => Promise<any>
 }
 
 export const DatapointContext = React.createContext<IDatapointContext>({
   datapoints: [],
   getDatapoints: async () => {},
   patchDatapoint: async (datapoint: any) => {},
-  postDatapoint: async (datapoint: any) => {}
+  postDatapoint: async (datapoint: any) => {},
+  getDatapointEntries: async (
+    datapointId: string, period: number, timeUnit: string) => {},
+  getLatestEntryWithChange: async (
+    datapointId: string, period: number, timeUnit: string) => {}
 })
 
 export const DatapointProvider: React.FC<{ children: any }> = props => {
@@ -94,6 +117,40 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
       console.log('error', error)
     }
   }, [user])
+
+  
+  const getDatapointEntries = React.useCallback(async (
+    datapointId: string, period: number, timeUnit: string) => {
+      try {
+        const response = await axios({
+          method: 'get',
+          url: API_URL + '/template/' + user.user.organizationId + '/' +
+            datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit,
+          headers: authorizationHeader()
+        })
+        
+        const entries = get(response, 'data')
+        return entries
+      } catch (error) {
+        console.log(error)
+      }
+  }, [])
+
+  const getLatestEntryWithChange = React.useCallback(async (
+    datapointId: string, period: number, timeUnit: string) => {
+      try {
+        const response = await axios({
+          method: 'get',
+          url: API_URL + '/template/latest-value-with-change/' + datapointId +
+            '?timePeriod=' + period + '&timeUnit=' + timeUnit,
+          headers: authorizationHeader() 
+        })
+        const entry = get(response, 'data')
+        return entry
+      } catch (error) {
+        console.log(error)
+      }
+    }, [])
 
   const patchDatapoint = React.useCallback(async (datapoint: any) => {
     try {
@@ -126,7 +183,7 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
   }, [])
 
   return (
-        <DatapointContext.Provider value={{ datapoints: [], getDatapoints, patchDatapoint, postDatapoint }}>
+        <DatapointContext.Provider value={{ datapoints: [], getDatapoints, patchDatapoint, postDatapoint, getDatapointEntries, getLatestEntryWithChange }}>
             {props.children}
         </DatapointContext.Provider>
   )
