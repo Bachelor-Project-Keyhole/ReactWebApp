@@ -1,20 +1,33 @@
-import * as React from 'react'
-import MenuLayout from '../../components/MenuLayout'
-import Popup from '../../components/Popup/Popup'
-import { useNavigate } from 'react-router-dom'
+import * as React from 'react';
+import { useEffect } from 'react';
+import MenuLayout from '../../components/MenuLayout';
+import MenuCard from '../../components/MenuCard/MenuCard';
+import { useNavigate } from 'react-router-dom';
 
-const Menu = ({ ...props }: any): JSX.Element => {
-  const navigate = useNavigate()
+const Menu = (): JSX.Element => {
+  const navigate = useNavigate();
 
-  const manageDatapointHandler = React.useCallback(() => {
-    navigate('/manage-datapoint')
-  }, [navigate])
+  const menuStyles: React.CSSProperties = {
+    position: 'relative',
+    background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)',
+    overflow: 'hidden',
+    width: '100vw',
+    height: '100vh',
+    overflowX: 'hidden',
+  };
+
+  useEffect(() => {
+    const bodyStyles: CSSStyleDeclaration = document.body.style;
+    bodyStyles.margin = '0';
+    bodyStyles.padding = '0';
+    bodyStyles.overflowX = 'hidden';
+  }, []);
 
   return (
-        <MenuLayout onManageDatapointClick={manageDatapointHandler}>
-            {/* <Popup></Popup> */}
-        </MenuLayout>
-  )
-}
+    <MenuLayout onManageDashboardClick={() => navigate('/manage-dashboard')} style={menuStyles}>
+      {/*  */}
+    </MenuLayout>
+  );
+};
 
-export default Menu
+export default Menu;
