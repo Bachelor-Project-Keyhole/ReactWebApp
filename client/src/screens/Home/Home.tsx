@@ -9,6 +9,12 @@ import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
 import Popup from '../../components/Popup'
 import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 import Navbar from '../../components/NavBar/NavBar'
+import LineChartComponent from '../../components/LineChart/LineChartComponent'
+import BarChartComponent from '../../components/BarChart/BarChartComponent'
+import TemplateCreator from '../../components/TemplateCreator/TemplateCreator'
+import { margin } from 'polished'
+import { IDatapointEntry, ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
+
 
 const Home = ({ ...props }: any): any => {
   const { temperature, getTemperature } = useWeatherContext()
@@ -43,6 +49,7 @@ const Home = ({ ...props }: any): any => {
       <Description text="Description Description Description Description Description Description Description Description" />
       <Button text="Button" icon={<PlusIcon/>} style={{ backgroundColor: 'black', color: 'white' }} />
       <Button text="Button" icon={<PlusIcon color="red"/>} />
+      <TemplateCreator></TemplateCreator>
       {/* <Popup>
         <Title text="Popup" />
         <Header text="Header" />
@@ -52,6 +59,19 @@ const Home = ({ ...props }: any): any => {
       </Popup> */}
     </>
   )
+}
+
+const entry: ILatestEntry = {
+    latestValue: 3,
+    change: 12, 
+    directionIsUp: false,
+    comparisonIsAbsolute: false
+}
+
+export const containerStyle: React.CSSProperties = {
+  width: '50vh',
+  height: '50vh',
+  padding: '10vh'
 }
 
 export default Home
