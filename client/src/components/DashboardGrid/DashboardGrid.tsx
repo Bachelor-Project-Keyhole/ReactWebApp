@@ -4,33 +4,36 @@ import GridElement from '../GridElement/GridElement'
 import { padding } from 'polished'
 import ResizableBlock from '../ResizableBlock/ResizableBlock'
 import { set } from 'lodash'
+import Block from '../Block'
+import { type BlockProps } from '../Block/Block'
 
-interface Block {
-  x: number
-  y: number
-  width: number
-  height: number
-  component?: React.ReactNode
-}
+// interface Block {
+//   x: number
+//   y: number
+//   width: number
+//   height: number
+//   component?: React.ReactNode
+// }
 
-const BlockComponent: React.FC<Block> = ({ x, y, width, height, component }) => {
-  const style: React.CSSProperties = {
-    gridColumn: `${x + 1} / span ${width}`,
-    gridRow: `${y + 1} / span ${height}`,
-    backgroundColor: 'red',
-    border: '1px solid black'
-  }
+// const BlockComponent: React.FC<Block> = ({ x, y, width, height, component }) => {
+//   const style: React.CSSProperties = {
+//     gridColumn: `${x + 1} / span ${width}`,
+//     gridRow: `${y + 1} / span ${height}`,
+//     backgroundColor: 'red',
+//     border: '1px solid black'
+//   }
 
-  return (
-    <div style={style} >
-      {component}
-    </div>
-  )
-}
+//   return (
+//     <div style={style} >
+//       {component}
+//     </div>
+//   )
+// }
 
 export interface DashboardGridProps {
   style?: React.CSSProperties
   // gridElements?: React.ReactNode[][]
+  draggedTemplate: any
   gridElements?: any[][]
 }
 
@@ -232,41 +235,42 @@ const initialGridElements = [
 
 ]
 
-const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardGridProps): JSX.Element => {
+const DashboardGrid = ({
+  gridElements = initialGridElements,
+  draggedTemplate,
+  style
+}: DashboardGridProps): JSX.Element => {
   // probably need to store the coordinates and the size of the grid elements
   // const [newGridElements, setNewGridElements] = React.useState(Array.from({ length: 8 }, () => Array.from({ length: 4 }, () => null)))
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
-  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<any>({})// template
+  // const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<any>({})// template
 
   const [onHover, setOnHover] = React.useState(false)
   const [onDrop, setOnDrop] = React.useState(false)
   const [heightOfTemplate, setHeightOfTemplate] = React.useState<number>(0)
   const [widthOfTemplate, setWidthOfTemplate] = React.useState<number>(0)
-  const [blocks, setBlocks] = useState<Block[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
+  const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
 
-  const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
-    // e.dataTransfer.setData('template', template)
-    const newtemplate = {
-      text: template + width.toString() + height.toString(),
-      spanHorizontal: height.toString(),
-      spanVertical: width.toString(),
-      component: <GridElement
-        text={template + width.toString() + height.toString()}
-        style={{
-          height: '100%',
-          width: '100%'
-        }} />,
-      blocked: false
-    }
-    setDraggedTemplateTemplate(newtemplate)
-  }
-  , [])
+  // const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
+  //   // e.dataTransfer.setData('template', template)
+  //   const newtemplate = {
+  //     text: template + width.toString() + height.toString(),
+  //     spanHorizontal: height.toString(),
+  //     spanVertical: width.toString(),
+  //     component: <GridElement
+  //       text={template + width.toString() + height.toString()}
+  //       style={{
+  //         height: '100%',
+  //         width: '100%'
+  //       }} />,
+  //     blocked: false
+  //   }
+  //   setDraggedTemplateTemplate(newtemplate)
+  // }
+  // , [])
 
   const handleOnDrop = React.useCallback((e: any, i: number, j: number): void => {
     console.log('drop', i, j)
-
-    setDraggedTemplateTemplate(e.dataTransfer.getData('template'))
-    console.log('drop', e.dataTransfer.getData('template'))
 
     const tempArray = [...newGridElements]
     const tempBlocks = [...blocks]
@@ -335,7 +339,7 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
         <div style={{ ...wrapperStyles, ...style }}>
             <div style={{ ...innerStyles }}>
                 {blocks.map((block, index) => (
-                  <BlockComponent key={index} {...block} />
+                  <Block key={index} {...block} />
                 ))}
 
                 {blocks.map((block, index) => (
@@ -458,12 +462,6 @@ const DashboardGrid = ({ gridElements = initialGridElements, style }: DashboardG
             </div>
             <div>
 
-            </div>
-            <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template1*1', 1, 1) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
-                  Template1*1
-            </div>
-            <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template2*2', 2, 2) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
-                  Template2*2
             </div>
 
         </div>
