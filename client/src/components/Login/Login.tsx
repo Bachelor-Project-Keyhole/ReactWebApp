@@ -111,7 +111,7 @@ export default class Login extends Component<Props, State> {
         AuthContext.login(email, password).then(
             () => {
                 this.setState({
-                    //redirect: '/profile'
+                    redirect: '/profile'
                 });
             },
             error => {

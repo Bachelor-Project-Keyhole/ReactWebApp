@@ -8,6 +8,7 @@ import Title from '../../components/Title'
 import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
 import Popup from '../../components/Popup'
 import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
+import Navbar from '../../components/NavBar/NavBar'
 
 const Home = ({ ...props }: any): any => {
   const { temperature, getTemperature } = useWeatherContext()
