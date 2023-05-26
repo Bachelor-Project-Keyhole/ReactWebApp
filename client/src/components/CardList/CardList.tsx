@@ -1,6 +1,7 @@
 import * as React from 'react'
 import DatapointCard from '../DatapointCard/DatapointCard'
 import UserCard from '../UserCard/UserCard'
+import UserService from '../../contexts/Authentication/UserService'
 
 export interface CardListProps /* extends NodeList */ {
   cardType: 'DatapointCard' | 'MemberCard'
@@ -19,7 +20,9 @@ const CardList = ({ cardType: card, data, editHandler, ...porps }: CardListProps
                          <DatapointCard title={item.displayName || item.dataPointKey} value={item.latestValue} onEdit={() => { editHandler(index) }}></DatapointCard>
                       }
                       {card === 'MemberCard' &&
-                          <UserCard name={item.name} email={item.email} role={item.role} status={item.status}></UserCard>
+                          <UserCard name={item.fullName} email={item.email}
+                            role={UserService.getUserRole(item.accessLevels)}
+                              onEdit={() => { editHandler(index)}} ></UserCard>
                       }
                     </div>
                 )

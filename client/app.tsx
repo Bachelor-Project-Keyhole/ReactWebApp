@@ -5,13 +5,14 @@ import Home from './src/screens/Home'
 import Menu from './src/screens/Menu'
 import ManageDatapoints from './src/screens/ManageDatapoints/ManageDatapoints'
 import { DatapointProvider } from './src/contexts/DatapointContext/DatapointContext'
-import ManageUsers from './src/screens/ManageOrganization/ManageOrganization'
+import ManageOrganization from './src/screens/ManageOrganization/ManageOrganization'
 import Navbar from './src/components/NavBar/NavBar'
 import Login from './src/components/Login/Login';
-import RegisterUser from './src/components/Register/Register';
+import Register from './src/components/Register/Register';
 import Profile from './src/screens/Profile/Profile'
 import AuthService from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
+import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
 
 function App (): JSX.Element {
 
@@ -31,20 +32,23 @@ function App (): JSX.Element {
   return (
     <WeatherProvider>
         <DatapointProvider>
-            <Navbar links={links} notLoggedInlinks = {notLoggedInlinks} />
-      {/* Rest of your application */}
-    
-       <Routes>
-            <Route path="/" element={<Home/>}/>
-            <Route path="/menu" element={<Menu/>}/>
-            <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
-            <Route path="/manage-organization" element={<ManageUsers companyName='KeyHole' users={users} />}/>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<RegisterUser isNewCompany={true} />} />
-            <Route path='/profile' element={<Profile></Profile>} />
-        </Routes>
-        {/* <Home/> */}
-        {/* <Menu/> */}
+               <ManageOrganizationProvider>
+                <Navbar links={links} notLoggedInlinks = {notLoggedInlinks} />
+          {/* Rest of your application */}
+        
+           <Routes>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/menu" element={<Menu/>}/>
+                <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
+                <Route path="/manage-organization" element={<ManageOrganization />}/>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register isNewCompany={true} />} />
+                <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
+                <Route path='/profile' element={<Profile></Profile>} />
+            </Routes>
+            {/* <Home/> */}
+            {/* <Menu/> */}
+          </ManageOrganizationProvider>
         </DatapointProvider>
     </WeatherProvider>
 

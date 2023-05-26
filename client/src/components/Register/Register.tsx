@@ -78,7 +78,7 @@ const buttonStyle: React.CSSProperties = {
     color: 'white'
 }
 
-export default class RegisterUser extends Component<Props, State> {
+export default class Register extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.handleRegisterCompany = this.handleRegisterCompany.bind(this)
@@ -133,9 +133,6 @@ export default class RegisterUser extends Component<Props, State> {
                     val.toString().length >= 2 &&
                     val.toString().length <= 20
             ).required('This field is required!'),
-            email: Yup.string()
-                .email('This is not a valid email.')
-                .required('This field is required!'),
             password: Yup.string()
                 .test(
                     'len',
@@ -189,8 +186,8 @@ export default class RegisterUser extends Component<Props, State> {
         );
     }
 
-    handleRegisterUser(formValue: { username: string; email: string; password: string }) {
-        const { username, email, password } = formValue
+    handleRegisterUser(formValue: { username: string; password: string }) {
+        const { username, password } = formValue
     
         this.setState({
           message: '',
@@ -199,7 +196,6 @@ export default class RegisterUser extends Component<Props, State> {
     
         AuthService.registerUser(
           username,
-          email,
           password
         ).then(
           response => {
@@ -237,7 +233,6 @@ export default class RegisterUser extends Component<Props, State> {
 
         const initialValuesUser = {
             username: '',
-            email: '',
             password: '',
             passwordRepeat: '',
         }
@@ -330,13 +325,6 @@ export default class RegisterUser extends Component<Props, State> {
                                                 <Field name='username' type='text' style={{ ...inputStyle }} />
                                                 <div style={{ ...errorMessageStyle }}>
                                                     <ErrorMessage name='username' />
-                                                </div>
-                                            </div>
-                                            <div style={{ ...inputGroupStyle }}>
-                                                <label htmlFor='email'> E-mail </label>
-                                                <Field name='email' type='email' style={{ ...inputStyle }} />
-                                                <div style={{ ...errorMessageStyle }}>
-                                                    <ErrorMessage name='email' />
                                                 </div>
                                             </div>
                                             <div style={{ ...inputGroupStyle }}>
