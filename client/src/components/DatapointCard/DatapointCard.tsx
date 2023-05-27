@@ -7,7 +7,7 @@ export interface DatapointCardProps {
   description?: string
   onEdit?: () => void
   value?: string
-}
+} 
 
 const DatapointCard = ({ title, description, onEdit, value, ...props }: DatapointCardProps): JSX.Element => {
   return (

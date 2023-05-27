@@ -5,83 +5,211 @@ import Button from '../../components/Button'
 import Popup  from '../../components/Popup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import { useManageOrganizationContext, type IOrganization } from '../../contexts/ManageOrganization/ManageOrganizationContext'
+import SubHeader from '../../components/SubHeader/SubHeader'
 // TODO: Import context and update the methods
 
 export interface ManageOrganizationProps {
-    companyName: string
-    users: any[]  // TODO: make an entity for users and use it here
+
 }
 
- // TODO: Context and methods for pulling users
+const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
+    const [ inviteModal, setInviteModal ] = React.useState(false)
+    const [ editModal, setEditModal ] = React.useState(false)
+    const { getOrganizationMembers, inviteMember, changeMemberRole, removeMember, getOrganizationDetails } = useManageOrganizationContext()
+    const [ members, setMembers ] = React.useState<any[]>([])
+    const [ roleToChange, setRoleToChange ] = React.useState<string>('Viewer')
+    const [ position, setPosition ] = React.useState(0)
+    const [ organization, setOrganization ] = React.useState<IOrganization>(
+        {organizationId: '', organizationName: '', organizationOwnerId: '',
+        apiKey: '', creationDate: '', modificationDate: ''})
 
-const ManageUsers = ({ ...props }: ManageOrganizationProps): any => {
-    const [editModal, setEditModal] = React.useState(false)
+    const handleGetOrganizationMembers = React.useCallback(async () => {
+        try {
+            const response = await getOrganizationMembers()
+            setMembers(response.users)
+        } catch(error) {
+            console.log(error)
+        }
+    }, [])
+
+    const handleGetOrganizationDetails = React.useCallback(async () => {
+        try {
+            const response = await getOrganizationDetails()
+            setOrganization(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
 
     const addMemberHandler = (): void => {
-        setEditModal(true)
+        setInviteModal(true)
     }
 
     const addMemberInitialValues = {
         email: '',
-        role: ''
+        role: 'Viewer',
+        message: ''
     }
 
     const addMemberValidationSchema = () => {
         return Yup.object().shape({
-            email: Yup.string().required('This field is required!'),
-            role: Yup.string().required('This field is required!')
+            email: Yup.string().required('This field is required!')
         })
     }
 
-    const handleAddMember = (formValue: {email: string, role: string}) => {
+    const handleInviteMember = React.useCallback( async(
+        formValue: {email: string, role: string, message: string}) => {
+        try {
+            const response = await inviteMember(
+                formValue.email, formValue.role, formValue.message)
+                    if(response.status === 200)
+                        setInviteModal(false)
+                        setPosition(0)
+                        handleGetOrganizationMembers()
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
+
+    React.useEffect(() => {
+        handleGetOrganizationMembers();
+    }, []);
+
+    const createRoleArray = (role: string) => {
+        if(role === 'Admin') 
+            return [ 'Viewer', 'Editor', 'Admin'] 
+        else if(role === 'Editor')
+            return [ 'Viewer', 'Editor' ]
+        else if(role === 'Viewer')
+            return [ 'Viewer' ]
         
+        var toReturn: string[] = []
+        return toReturn
     }
 
     const handleRoleSet = (role: string) => {
         addMemberInitialValues.role = role
     }
 
-    const handler = () => {}
+    const handleRoleChange = (role: string) => {
+        setRoleToChange(role)
+    }
+
+    const handleUserEdit = React.useCallback( async() => {
+        try {
+            const response = await changeMemberRole(
+                members[position].id, roleToChange)
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }, [roleToChange, position])
+
+    const handleRemoveUser = React.useCallback( async () => {
+        console.log(members)
+        try {
+            var id = members[position].id
+            const response = await removeMember(id)
+            console.log(response)
+            if(response.status == 200) {
+                setEditModal(false)
+                setPosition(0)
+                handleGetOrganizationMembers()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }, [members, position])
+
+    const editHandler = React.useCallback((key: number): void => {
+        setEditModal(true)
+        setPosition(key)
+    }, [setEditModal])
+
+    React.useLayoutEffect(() => {
+        handleGetOrganizationMembers()
+        handleGetOrganizationDetails()
+        
+    }, [handleGetOrganizationMembers, handleGetOrganizationDetails])
 
     return (
         <>
             <div style={{ ...wrapperStyles }}>
                 <div style={{ ...innerStyles }}>
                     <div style={{ ...topDivStyle }}>
-                        <Title text={props.companyName} />
+                        <Title text={ organization.organizationName } />
                         <Button text='Invite Member' style={ buttonStyle } onClick={addMemberHandler}/>
                     </div>
+                    <div style={{ ...descriptionStyle }}>
+                        <p>Api key:&nbsp;&nbsp; </p>
+                        <p>{organization.apiKey}</p>
+                    </div>
+                    <div style={{ ...descriptionStyle }}>
+                        <p>Creation date:&nbsp;&nbsp; </p>
+                        <p>{organization.creationDate}</p>
+                    </div>
+                    <div style={{ ...descriptionStyle }}>
+                        <p>Last modified:&nbsp;&nbsp; </p>
+                        <p>{organization.modificationDate}</p>
+                    </div>
                     <div>
-                        <CardList cardType='MemberCard' data={ props.users } editHandler={ handler } /> 
+                        <CardList cardType='MemberCard' data={ members } editHandler={ editHandler }></CardList> 
                     </div>
                 </div>
             </div>
-            {editModal && <Formik
-                initialValues={ addMemberInitialValues }
-                validationSchema={ addMemberValidationSchema }
-                onSubmit={ handleAddMember } >
-                    <Popup onClose={() => { setEditModal(false) }}>
-                        <div style={{ ...inputGroupStyle }}>
-                            <Title text='Invite a new member' />
-                        </div>
-                        <div style={{ ...inputGroupStyle }}>
-                            <label htmlFor='email'>E-mail address</label>
-                            <Field name='email' tyoe='email' style={{ ...inputStyle }} />
-                        </div>
-                        <div style={{ ...inputGroupStyle }} >
-                            <label htmlFor='role'>Role</label>
-                            <select name='role' style={{ ...inputStyle }}
-                                onChange={event => handleRoleSet(event.target.value)}>
-                                    <option id='0' >Viewer</option>
-                                    <option id='1' >Editor</option>
-                                    <option id='2' >Moderator</option>
-                            </select>
-                        </div>
-                        <div style={{ ...inputGroupStyle }} >
-                            <Button type='submit' text={'Invite'} style={{ ...buttonStyle }} />
-                        </div>
-                    </Popup>
-                </Formik>
+            { inviteModal &&
+                <Popup onClose={() => { setInviteModal(false) }}>
+                    <Formik
+                        initialValues={ addMemberInitialValues }
+                        validationSchema={ addMemberValidationSchema }
+                        onSubmit={ handleInviteMember } >
+                            <Form>
+                                <div style={{ ...inputGroupStyle }}>
+                                    <Title text='Invite a new member' />
+                                </div>
+                                <div style={{ ...inputGroupStyle }}>
+                                    <label htmlFor='email'>E-mail address</label>
+                                    <Field name='email' type='email' style={{ ...inputStyle }} />
+                                    <ErrorMessage name='email' component='div' className='error' />
+                                </div>
+                                <div style={{ ...inputGroupStyle }} >
+                                    <label htmlFor='role'>Role</label>
+                                    <select name='role' style={{ ...inputStyle }}
+                                        onChange={event => handleRoleSet(event.target.value)}>
+                                            <option id='0' >Viewer</option>
+                                            <option id='1' >Editor</option>
+                                            <option id='2' >Admin</option>
+                                    </select>
+                                    <ErrorMessage name='role' component='div' className='error' />
+                                </div>
+                                <div style={{ ...inputGroupStyle }}>
+                                    <label htmlFor='message'>Message</label>
+                                    <Field name='message' type='text' style={{ ...inputGroupStyle }} />
+                                </div>
+                                <div style={{ ...inputGroupStyle }} >
+                                    <Button type='submit' text={'Invite'} style={{ ...buttonStyle }} />
+                                </div>
+                            </Form>
+                    </Formik>
+                </Popup>   
+            }
+            { editModal &&
+                <Popup onClose={() => { setEditModal(false) }}>
+                    <div style={{ ...inputGroupStyle }}>
+                        <select name='role' style={{ ...inputStyle }}
+                            onChange={event => handleRoleChange(event.target.value)}>
+                                <option id='0' >Viewer</option>
+                                <option id='1' >Editor</option>
+                                <option id='2' >Admin</option>
+                        </select>
+                    </div>
+                    <div style={{ ...inputGroupStyle }}>
+                        <Button text='Save' style={{ ...buttonStyle }} onClick={ handleUserEdit } ></Button>
+                        <Button text='Remove user' style={{ ...removeButtonStyle }} onClick={ handleRemoveUser } ></Button>
+                    </div>
+                </Popup>  
             }
         </>
     )
@@ -90,7 +218,22 @@ const ManageUsers = ({ ...props }: ManageOrganizationProps): any => {
 export const buttonStyle: React.CSSProperties = {
     borderRadius: 5,
     backgroundColor: '#0275d8',
-    border: '2px solid #0275d8',
+    border: '1px solid #0275d8',
+    color: 'white',
+    marginTop: '2vh',
+    height: '3vh'
+}
+
+export const descriptionStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    
+}
+
+export const removeButtonStyle: React.CSSProperties = {
+    borderRadius: 5,
+    backgroundColor: '#FF0000',
+    border: '1px solid #0275d8',
     color: 'white',
     marginTop: '2vh',
     height: '3vh'
@@ -134,4 +277,4 @@ const inputStyle: React.CSSProperties = {
     width: '20vh',
 }
 
-export default ManageUsers
+export default ManageOrganization

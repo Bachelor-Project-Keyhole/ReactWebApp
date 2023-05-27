@@ -6,17 +6,19 @@ export interface UserCardProps {
     name: string
     email: string
     role: string
-    status: string
+    onEdit?: () => void
 }
 
-const UserCard = ({ name, email, role, status, ...props }: UserCardProps): JSX.Element => {
+const UserCard = ({ name, email, role, onEdit, ...props }: UserCardProps): JSX.Element => {
     return (
         <Card style={{ ...props }}>
             <div style={{ ...innerStyles}}>
                 <div style={{ ...nameStyles }}>{name}</div>
                 <div style={{ ...fieldStyles }}>{email}</div>
                 <div style={{ ...fieldStyles }}>{role}</div>
-                <div style={{ ...fieldStyles }}>{status}</div>
+                <div style={{ ...fieldStyles }}>
+                    <Button onClick={onEdit} text={'Edit'} style={{ ...buttonStyles}} />
+                </div>
             </div>
         </Card>
     )
