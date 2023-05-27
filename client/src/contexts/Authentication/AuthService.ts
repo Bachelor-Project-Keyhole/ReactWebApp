@@ -36,10 +36,11 @@ class AuthService {
     })
   }
 
-  registerUser(username: string, password: string) {
-    return axios.post(API_URL + '/organization/register/{token}', {
-      password,
-      username
+  registerUser(fullName: string, password: string, token: string) {
+    console.log(token)
+    return axios.post(API_URL + '/organization/register/' + token, {
+      fullName,
+      password
     });
   }
 

@@ -62,7 +62,7 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
         formValue: {email: string, role: string, message: string}) => {
         try {
             const response = await inviteMember(
-                formValue.email, createRoleArray(formValue.role), formValue.message)
+                formValue.email, formValue.role, formValue.message)
                     if(response.status === 200)
                         setInviteModal(false)
                         setPosition(0)
