@@ -12,6 +12,7 @@ import RegisterUser from './src/components/Register/Register'
 import Profile from './src/screens/Profile/Profile'
 import AuthService from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
+import ManageDashboard from './src/screens/ManageDashboard/ManageDashboard'
 
 function App (): JSX.Element {
   const links = [
@@ -38,6 +39,7 @@ function App (): JSX.Element {
             <Route path="/menu" element={<Menu/>}/>
             <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
             <Route path="/manage-organization" element={<ManageUsers companyName='KeyHole' users={users} />}/>
+            <Route path="/manage-dashboard" element={<ManageDashboard/>}/>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterUser isNewCompany={true} />} />
             <Route path='/profile' element={<Profile></Profile>} />

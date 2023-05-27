@@ -3,6 +3,9 @@ import DashboardGrid from '../../components/DashboardGrid/DashboardGrid'
 import Block, { type BlockProps } from '../../components/Block/Block'
 import GridElement from '../../components/GridElement'
 import Button from '../../components/Button/Button'
+import TemplateCreator from '../../components/TemplateCreator/TemplateCreator'
+import { initialTemplate, type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
+import { type IDashboard, useDashboardContext, initialDashboard } from '../../contexts/DashboardContext/DashboardContext'
 
 export interface ManageDashboardProps {
   style?: React.CSSProperties
@@ -11,22 +14,62 @@ export interface ManageDashboardProps {
 const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
   // const [newGridElements, setNewGridElements] = React.useState(gridElements)
   // const [blocks, setBlocks] = React.useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
-  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<any>({})// template
+  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<ITemplate>(initialTemplate)// template
+  const { loadDashboard } = useDashboardContext()
+  const [dashboard, setDashboard] = React.useState<IDashboard>(initialDashboard)
 
-  const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
-    const newtemplate = {
-      text: template + width.toString() + height.toString(),
-      spanHorizontal: height.toString(),
-      spanVertical: width.toString(),
-      component: <GridElement
-          text={template + width.toString() + height.toString()}
-          style={{
-            height: '100%',
-            width: '100%'
-          }} />,
-      blocked: false
+  const handleLoadDashboard = React.useCallback(async (dashboardId: string) => {
+    try {
+      const response = await loadDashboard(dashboardId)
+      setDashboard(response)
+    } catch (error) {
+      console.log('error', error)
     }
-    setDraggedTemplateTemplate(newtemplate)
+  }, [])
+
+  React.useEffect(() => {
+    // handleLoadDashboard('5f9e9b0b1c9d440000d3b0a0')
+    // Dummy data
+    setDashboard({
+      dashboardId: '5f9e9b0b1c9d440000d3b0a0',
+      dashboardName: 'Dashboard 1',
+      placeholders: [
+        {
+          positionHeight: 0,
+          positionWidth: 0,
+          sizeHeight: 1,
+          sizeWidth: 1,
+          templateId: '5f9e9b0b1c9d440000d3b0a0',
+          values: [
+            {
+              value: 0,
+              time: '2020-10-30T12:00:00.000Z'
+            }
+          ],
+          change: 0,
+          comparison: true,
+          latestValue: 0,
+          isDirectionUp: true
+        }
+      ]
+    })
+  }, [setDashboard])
+
+  const handleOnDragStart = React.useCallback((e: React.DragEvent, newTemplate: ITemplate): void => {
+    // const newtemplate = {
+    //   text: 'asd',
+    //   // spanHorizontal: height.toString(),
+    //   // spanVertical: width.toString(),
+    //   component: <GridElement
+    //       text={'Text'}
+    //       style={{
+    //         height: '100%',
+    //         width: '100%'
+    //       }} />,
+    //   blocked: false
+    // }
+
+    setDraggedTemplateTemplate(newTemplate)
   }
   , [])
 
@@ -61,18 +104,21 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
           Manage Dashboard
             <div style={{ ...innerStyles }}>
 
-                <DashboardGrid draggedTemplate />
-                <div style={{ width: 300, height: 400, backgroundColor: 'red', margin: 8 }}>
-                  <div draggable onDragStart={(e) => { handleOnDragStart(e, 'Template1*1', 1, 1) }} style={{ height: 100, width: 100, backgroundColor: 'cyan' }}>
-                    Template1*1
+                <DashboardGrid
+                  dashboard={dashboard}
+                  draggedTemplate={draggedTemplate} />
+                <div style={{ padding: 8 }}>
+                  <div>
+                   <TemplateCreator handleOnDragStart={handleOnDragStart}/>
+                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
+                    <Button text='Save' onClick={() => {}} />
+                    <Button text='Cancel' onClick={() => {}} />
+                  </div>
                   </div>
                 </div>
 
             </div>
-            <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <Button text='Save' onClick={() => {}} />
-            <Button text='Cancel' onClick={() => {}} />
-            </div>
+
         </div>
   )
 }

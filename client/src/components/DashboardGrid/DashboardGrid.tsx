@@ -6,34 +6,14 @@ import ResizableBlock from '../ResizableBlock/ResizableBlock'
 import { set } from 'lodash'
 import Block from '../Block'
 import { type BlockProps } from '../Block/Block'
-
-// interface Block {
-//   x: number
-//   y: number
-//   width: number
-//   height: number
-//   component?: React.ReactNode
-// }
-
-// const BlockComponent: React.FC<Block> = ({ x, y, width, height, component }) => {
-//   const style: React.CSSProperties = {
-//     gridColumn: `${x + 1} / span ${width}`,
-//     gridRow: `${y + 1} / span ${height}`,
-//     backgroundColor: 'red',
-//     border: '1px solid black'
-//   }
-
-//   return (
-//     <div style={style} >
-//       {component}
-//     </div>
-//   )
-// }
+import { type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
+import { type IDashboard, type IDashboardPlaceholder } from '../../contexts/DashboardContext/DashboardContext'
 
 export interface DashboardGridProps {
   style?: React.CSSProperties
   // gridElements?: React.ReactNode[][]
-  draggedTemplate: any
+  dashboard: IDashboard
+  draggedTemplate: ITemplate
   gridElements?: any[][]
 }
 
@@ -236,58 +216,143 @@ const initialGridElements = [
 ]
 
 const DashboardGrid = ({
+  dashboard,
   gridElements = initialGridElements,
   draggedTemplate,
   style
 }: DashboardGridProps): JSX.Element => {
   // probably need to store the coordinates and the size of the grid elements
-  // const [newGridElements, setNewGridElements] = React.useState(Array.from({ length: 8 }, () => Array.from({ length: 4 }, () => null)))
+  const [newDashboard, setNewDashboard] = React.useState<IDashboard>(dashboard)
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
-  // const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<any>({})// template
-
-  const [onHover, setOnHover] = React.useState(false)
-  const [onDrop, setOnDrop] = React.useState(false)
-  const [heightOfTemplate, setHeightOfTemplate] = React.useState<number>(0)
-  const [widthOfTemplate, setWidthOfTemplate] = React.useState<number>(0)
   const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
 
-  // const handleOnDragStart = React.useCallback((e: React.DragEvent, template: string, width: number, height: number): void => {
-  //   // e.dataTransfer.setData('template', template)
-  //   const newtemplate = {
-  //     text: template + width.toString() + height.toString(),
-  //     spanHorizontal: height.toString(),
-  //     spanVertical: width.toString(),
-  //     component: <GridElement
-  //       text={template + width.toString() + height.toString()}
-  //       style={{
-  //         height: '100%',
-  //         width: '100%'
-  //       }} />,
-  //     blocked: false
-  //   }
-  //   setDraggedTemplateTemplate(newtemplate)
-  // }
-  // , [])
+  const handleOnTemplateDelete = (templateId: string) => {
+    const tempBlocks = [...blocks]
+
+    const index = tempBlocks.findIndex((block) => block.templateId === templateId)
+    tempBlocks.splice(index, 1)
+    setBlocks(tempBlocks)
+    setNewDashboard({
+      ...newDashboard,
+      placeholders: newDashboard.placeholders.filter((placeholder) => placeholder.templateId !== templateId)
+    })
+  }
+
+  React.useEffect(() => {
+    setNewDashboard(dashboard)
+  }, [dashboard])
+
+  React.useEffect(() => {
+    console.log('newDashboard', newDashboard)
+    console.log('dashboard', dashboard)
+
+    const tempBlocks = new Array<any>()
+    newDashboard.placeholders.forEach((placeholder: IDashboardPlaceholder) => {
+      tempBlocks.push({
+        x: placeholder.positionWidth,
+        y: placeholder.positionHeight,
+        width: placeholder.sizeWidth,
+        height: placeholder.sizeHeight,
+        component:
+          <GridElement
+            onClose={
+              () => {
+                handleOnTemplateDelete(placeholder.templateId)
+                console.log('TEMPLATEID' + placeholder.templateId)
+              }
+            }
+            text={placeholder.templateId}
+            template={
+              {
+                templateId: placeholder.templateId,
+                datapoints: [],
+                datapointId: '',
+                timeSpan: 0,
+                templateType: placeholder.templateId,
+                datapointEntries: [],
+                latestEntry: {
+                  latestValue: placeholder.latestValue,
+                  change: placeholder.change,
+                  comparisonIsAbsolute: placeholder.comparison,
+                  directionIsUp: placeholder.isDirectionUp
+                }
+              }
+              }
+
+            />
+      })
+    })
+    setBlocks(tempBlocks)
+  }, [newDashboard])
+
+  React.useEffect(() => {
+    console.log(
+      'TEMPBLOCKS' + blocks.toString())
+  }, [blocks])
 
   const handleOnDrop = React.useCallback((e: any, i: number, j: number): void => {
-    console.log('drop', i, j)
-
-    const tempArray = [...newGridElements]
+    console.log('BLOCK', draggedTemplate.templateId)
+    // const tempArray = [...newGridElements]
     const tempBlocks = [...blocks]
     tempBlocks.push({
       x: i,
       y: j,
       width: 1,
       height: 1,
-      component:
-        <GridElement
-          text={draggedTemplate.text}
-          style={{
-            height: '100%',
-            width: '100%'
-          }} />
+      templateId: draggedTemplate.templateId,
+      component: <></>
+      // <GridElement
+      //   onClose={
+      //     () => {
+      //       // tempArray[i][j] = null
+      //       // setNewGridElements(tempArray)
+      //       // handleOnTemplateDelete(draggedTemplate.templateType)
+      //     }}
+      //   text={draggedTemplate.templateType}
+      //   template={draggedTemplate}
+      //   style={{
+      //     height: '100%',
+      //     width: '100%'
+      //   }} />
     })
     setBlocks(tempBlocks)
+    setNewDashboard(
+      {
+        ...newDashboard,
+        placeholders: [
+          ...newDashboard.placeholders,
+          {
+            positionWidth: i,
+            positionHeight: j,
+            sizeWidth: 1,
+            sizeHeight: 1,
+            templateId: draggedTemplate.templateId,
+            latestValue: draggedTemplate.latestEntry.latestValue,
+            change: draggedTemplate.latestEntry.change,
+            comparison: draggedTemplate.latestEntry.comparisonIsAbsolute,
+            isDirectionUp: draggedTemplate.latestEntry.directionIsUp,
+            values: []
+            // datapointId: draggedTemplate.datapointId,
+            // timeSpan: draggedTemplate.timeSpan,
+            // datapointEntries: draggedTemplate.datapointEntries,
+            // datapoints: draggedTemplate.datapoints,
+            // templateType: draggedTemplate.templateType,
+            // latestEntry: {
+            //   latestValue: draggedTemplate.latestEntry.latestValue,
+            //   change: draggedTemplate.latestEntry.change,
+            //   comparisonIsAbsolute: draggedTemplate.latestEntry.comparisonIsAbsolute,
+            //   directionIsUp: draggedTemplate.latestEntry.directionIsUp
+
+            // }
+          }
+        ]
+      }
+    )
+    // tempArray[i][j] = {
+    //   text: draggedTemplate.templateType,
+    //   spanHorizontal: draggedTemplate.spanHorizontal,
+    //   spanVertical: draggedTemplate.spanVertical
+    // }
 
     // This will be removed when the resize is done
     // if (draggedTemplate.spanHorizontal > 1 || draggedTemplate.spanVertical > 1) {
@@ -297,9 +362,9 @@ const DashboardGrid = ({
     //     }
     //   }
     // }
-    setNewGridElements(tempArray)
+    // setNewGridElements(tempArray)
   }
-  , [newGridElements, draggedTemplate])
+  , [draggedTemplate, blocks])
 
   function handleDragOver (e: any): void {
     e.preventDefault()
@@ -406,59 +471,6 @@ const DashboardGrid = ({
                                     </div>
                   )
                 })}
-
-                {/* <div style={{
-                  // gridArea: 'a ',
-                  gridColumn: '1',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '2',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '3',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '4',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '5',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '6',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '7',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '8',
-                  gridRow: '1',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '1',
-                  gridRow: '2',
-                  ...gridElementStyle
-                }} />
-                <div style={{
-                  gridColumn: '2',
-                  gridRow: '2',
-                  ...gridElementStyle
-                }} /> */}
-
             </div>
             <div>
 
@@ -475,18 +487,22 @@ export const wrapperStyles: React.CSSProperties = {
   alignItems: 'center',
   // width: '100%',
   // height: '100%',
-  width: '800px',
-  height: '400px',
-  backgroundColor: '#f1f100'
+  maxWidth: '75vw',
+  minWidth: '800px',
+  maxHeight: '90vh',
+  minHeight: '400px',
+  aspectRatio: '8 / 4'
+  // backgroundColor: '#f1f100'
 }
 
 export const innerStyles: React.CSSProperties = {
-  width: '100%',
+  // width: '100%',
   height: '100%',
   padding: '10px',
   display: 'grid',
   gridTemplateColumns: 'repeat(8, 1fr)',
   gridTemplateRows: 'repeat(4, 1fr)',
+  aspectRatio: '8 / 4'
   // gridTemplateAreas: `
   //   "1 2 3 4 5 6 7 8"
   //   "9 10 11 12 13 14 15 16"
@@ -499,7 +515,7 @@ export const innerStyles: React.CSSProperties = {
   //   "q r s t u v w x"
   //   "y z aa bb cc dd ee ff"
   // `,
-  backgroundColor: '#f1f5a1'
+  // backgroundColor: '#f1f5a1'
 }
 
 export const elementStyles: React.CSSProperties = {
@@ -518,13 +534,12 @@ export const gridElementStyle: React.CSSProperties = {
   // gridColumn: '1 / span 1',
   // gridRow: '1 / span 1',
   // backgroundColor: 'red',
-  border: '1px dashed black',
+  border: '2px dashed black',
   zIndex: 1,
   // cursor: 'se-resize',
   padding: 5,
-  margin: 2
-  // height: '12.5%',
-  // width: '25%'
+  margin: 2,
+  aspectRatio: '1 / 1'
 }
 
 export default DashboardGrid

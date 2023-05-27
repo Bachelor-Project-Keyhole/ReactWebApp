@@ -8,16 +8,16 @@ interface Block {
   height: number
 }
 
-const BlockComponent: React.FC<Block> = ({ x, y, width, height }) => {
-  const style: React.CSSProperties = {
-    gridColumn: `${x + 1} / span ${width}`,
-    gridRow: `${y + 1} / span ${height}`,
-    backgroundColor: 'red',
-    border: '1px solid black'
-  }
+// const BlockComponent: React.FC<Block> = ({ x, y, width, height }) => {
+//   const style: React.CSSProperties = {
+//     gridColumn: `${x + 1} / span ${width}`,
+//     gridRow: `${y + 1} / span ${height}`
+//     // backgroundColor: 'red',
+//     // border: '1px solid black'
+//   }
 
-  return <div style={style} />
-}
+//   return <div style={style} />
+// }
 
 interface ResizableBlockProps extends Block {
   index: number

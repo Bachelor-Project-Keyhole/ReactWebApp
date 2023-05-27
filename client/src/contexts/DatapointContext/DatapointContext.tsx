@@ -63,14 +63,14 @@ export const initialDatapointForm: IDatapointForm = {
 }
 
 export interface IDatapointEntry {
-  value: number,
+  value: number
   timestamp: string
 }
 
 export interface ILatestEntry {
-  latestValue: number,
-  change: number,
-  directionIsUp: boolean,
+  latestValue: number
+  change: number
+  directionIsUp: boolean
   comparisonIsAbsolute: boolean
 }
 
@@ -80,9 +80,9 @@ export interface IDatapointContext {
   patchDatapoint: (datapoint: any) => Promise<any>
   postDatapoint: (datapoint: any) => Promise<any>
   getDatapointEntries: (
-    datapointId:string, period: number, timeUnit: string) => Promise<any>
+    datapointId: string, period: number, timeUnit: string) => Promise<any>
   getLatestEntryWithChange: (
-    datapointId:string, period: number, timeUnit: string) => Promise<any>
+    datapointId: string, period: number, timeUnit: string) => Promise<any>
 }
 
 export const DatapointContext = React.createContext<IDatapointContext>({
@@ -118,39 +118,38 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
     }
   }, [user])
 
-  
   const getDatapointEntries = React.useCallback(async (
     datapointId: string, period: number, timeUnit: string) => {
-      try {
-        const response = await axios({
-          method: 'get',
-          url: API_URL + '/template/' + user.user.organizationId + '/' +
+    try {
+      const response = await axios({
+        method: 'get',
+        url: API_URL + '/template/' + user.user.organizationId + '/' +
             datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit,
-          headers: authorizationHeader()
-        })
-        
-        const entries = get(response, 'data')
-        return entries
-      } catch (error) {
-        console.log(error)
-      }
+        headers: authorizationHeader()
+      })
+
+      const entries = get(response, 'data')
+      return entries
+    } catch (error) {
+      console.log(error)
+    }
   }, [])
 
   const getLatestEntryWithChange = React.useCallback(async (
     datapointId: string, period: number, timeUnit: string) => {
-      try {
-        const response = await axios({
-          method: 'get',
-          url: API_URL + '/template/latest-value-with-change/' + datapointId +
+    try {
+      const response = await axios({
+        method: 'get',
+        url: API_URL + '/template/latest-value-with-change/' + datapointId +
             '?timePeriod=' + period + '&timeUnit=' + timeUnit,
-          headers: authorizationHeader() 
-        })
-        const entry = get(response, 'data')
-        return entry
-      } catch (error) {
-        console.log(error)
-      }
-    }, [])
+        headers: authorizationHeader()
+      })
+      const entry = get(response, 'data')
+      return entry
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
 
   const patchDatapoint = React.useCallback(async (datapoint: any) => {
     try {
