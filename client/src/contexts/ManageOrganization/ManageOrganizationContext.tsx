@@ -19,7 +19,7 @@ export interface IManageOrganizationContext {
     getOrganizationDetails: () => Promise<any>
     changeMemberRole: (userId: string, role: string) => Promise<any>
     removeMember: (id: string) => Promise<any>
-    inviteMember: (email: string, roles: string[], message: string) => Promise<any>
+    inviteMember: (email: string, roles: string, message: string) => Promise<any>
 }
 
 export const ManageOrganizationContext = React.createContext<IManageOrganizationContext>({
@@ -27,7 +27,7 @@ export const ManageOrganizationContext = React.createContext<IManageOrganization
     getOrganizationDetails: async () => {},
     changeMemberRole: async (userId: string, role: string) => {},
     removeMember: async () => {},
-    inviteMember: async (email:string, roles: string[], message: string) => {}
+    inviteMember: async (email:string, roles: string, message: string) => {}
 })
 
 export const ManageOrganizationProvider: React.FC<{ children: any }> = props => {
@@ -83,12 +83,12 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
     }, [])
 
     const inviteMember = React.useCallback(async (
-        receiverEmailAddress: string, accessLevels: string[], message: string) => {
+        receiverEmailAddress: string, accessLevel: string, message: string) => {
         var organizationId = getCurrentOrganizationId()
         try {
             const response = await axios.post(
                 API_URL + 'invite/email',
-                {organizationId, receiverEmailAddress, accessLevels, message},
+                {organizationId, receiverEmailAddress, accessLevel, message},
                 { headers: authorizationHeader() }
             )
         return response.data
