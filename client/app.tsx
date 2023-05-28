@@ -17,24 +17,12 @@ import ProtectedRoute from './src/components/ProtectedRoute/ProtectedRoute'
 
 function App (): JSX.Element {
 
-    const links = [
-        { to: '/menu', text: 'Menu' },
-        { to: '/manage-datapoint', text: 'Manage Datapoint' },
-        { to: '/manage-organization', text: 'Manage Organization'},
-        { to: '/profile', text: 'Profile' },
-        { to: '/', text: 'Logout'},
-      ];
-    const notLoggedInlinks = [
-        { to: '/register', text: 'Register' },
-        { to: '/login', text: 'Login' },
-      ];
-
   return (
     <WeatherProvider>
         <DatapointProvider>
             <ManageOrganizationProvider>
               <AuthServiceProvider>
-                <Navbar links={links} notLoggedInlinks = {notLoggedInlinks} />
+                <Navbar />
           {/* Rest of your application */}
         
                 <Routes>
