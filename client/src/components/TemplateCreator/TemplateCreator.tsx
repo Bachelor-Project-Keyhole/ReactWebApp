@@ -36,14 +36,14 @@ const inputStyle: React.CSSProperties = {
   width: '97%'
 }
 
-const mediumsizeStyles: React.CSSProperties = {
-  width: '100%',
-  height: '100%'
-}
+// const mediumsizeStyles: React.CSSProperties = {
+//   width: '100%',
+//   height: '100%'
+// }
 
 const previewStyles: React.CSSProperties = {
-  width: '100%',
-  height: '20%'
+  width: 200,
+  height: 200
 
 }
 
@@ -163,11 +163,11 @@ const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps):
                 onMouseLeave={handleMouseLeave}
                 style={{ ...previewStyles, border: isHoverTemplate ? '1px solid black' : 'none' }}>
                 { datapointEntries && template == 'Line' &&
-                    <LineChartComponent componentStyle={{ ...mediumsizeStyles }}
+                    <LineChartComponent
                         data={datapointEntries} latestEntry={latestEntry} datapointName={getDatapointName()} ></LineChartComponent>
                 }
                 { datapointEntries && template == 'Bar' &&
-                    <BarChartComponent componentStyle={{ ...mediumsizeStyles }}
+                    <BarChartComponent
                         data={datapointEntries} latestEntry={latestEntry} datapointName={getDatapointName()} ></BarChartComponent>
                 }
             </div>

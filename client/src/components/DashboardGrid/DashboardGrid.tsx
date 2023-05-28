@@ -268,7 +268,7 @@ const DashboardGrid = ({
                 datapoints: [],
                 datapointId: '',
                 timeSpan: 0,
-                templateType: placeholder.templateId,
+                templateType: 'Line',
                 datapointEntries: [],
                 latestEntry: {
                   latestValue: placeholder.latestValue,
@@ -488,9 +488,9 @@ export const wrapperStyles: React.CSSProperties = {
   // width: '100%',
   // height: '100%',
   maxWidth: '75vw',
-  minWidth: '800px',
+  minWidth: '900px',
   maxHeight: '90vh',
-  minHeight: '400px',
+  minHeight: '490px',
   aspectRatio: '8 / 4'
   // backgroundColor: '#f1f100'
 }

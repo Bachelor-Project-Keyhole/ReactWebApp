@@ -13,6 +13,7 @@ import Profile from './src/screens/Profile/Profile'
 import AuthService from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
 import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
+import ManageDashboard from './src/screens/ManageDashboard/ManageDashboard'
 
 function App (): JSX.Element {
   const links = [
@@ -40,6 +41,7 @@ function App (): JSX.Element {
                 <Route path="/menu" element={<Menu/>}/>
                 <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
                 <Route path="/manage-organization" element={<ManageOrganization />}/>
+                <Route path="/manage-dashboard" element={<ManageDashboard />}/>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register isNewCompany={true} />} />
                 <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />

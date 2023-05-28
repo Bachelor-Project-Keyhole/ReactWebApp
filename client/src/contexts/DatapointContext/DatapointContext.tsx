@@ -124,7 +124,7 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
       const response = await axios({
         method: 'get',
         url: API_URL + '/template/' + user.user.organizationId + '/' +
-            datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit,
+            datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit + '&displayType=abc',
         headers: authorizationHeader()
       })
 

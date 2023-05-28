@@ -5,28 +5,43 @@ import Title from '../Title/Title'
 import UpArrowIcon from '../UpArrowIcon/UpArrowIcon'
 import DownArrowIcon from '../DownArrowIcon/DownArrowIcon'
 import { type ILatestEntry, IDatapointEntry } from '../../contexts/DatapointContext/DatapointContext'
+import { margin } from 'polished'
+import Description from '../Description/Description'
 
 export interface LineChartComponentProps {
-  componentStyle: React.CSSProperties
+  style?: React.CSSProperties
   data: any[]
   latestEntry: ILatestEntry
   datapointName: string
 }
 
+export const wrapperStyle: React.CSSProperties = {
+  width: 200,
+  height: 200,
+  border: '1px solid black'
+}
+
 export const LineChartStyle: React.CSSProperties = {
-  width: '100%',
-  height: '100%'
+  width: '60%',
+  height: '60%',
+  marginTop: -8
 }
 
 export const lastEntryStyle: React.CSSProperties = {
   display: 'flex',
-  flexDirection: 'column',
-  placeItems: 'center'
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+  margin: -16,
+  height: '30%'
+  // backgroundColor: 'red'
 }
 
 export const nameStyle: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  lineHeight: 0,
+  height: '10%'
 }
 
 export const directionStyle: React.CSSProperties = {
@@ -36,25 +51,25 @@ export const directionStyle: React.CSSProperties = {
 }
 
 const LineChartComponent = (
-  { componentStyle, data, datapointName, latestEntry, ...props }: LineChartComponentProps): JSX.Element => {
+  { data, datapointName, latestEntry, style, ...props }: LineChartComponentProps): JSX.Element => {
   return (
-        <div style={{ ...componentStyle }}>
+        <div style={{ ...wrapperStyle, ...style }}>
             <div style={{ ...nameStyle }}>
-                <SubHeader text={datapointName} style={{ fontSize: '100%' }} />
+                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '90%' }} />
             </div>
-            {/* <ResponsiveContainer aspect={1} width='100%' height='100%' >
+            <ResponsiveContainer width='80%' height='60%' >
                 <LineChart style={{ ...LineChartStyle }} data={data}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='time' />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
+                    {/* <Legend /> */}
                     <Line type='monotone' dataKey='value'
                         stroke='#8884d8' activeDot={{ r: 8 }} />
                 </LineChart>
-            </ResponsiveContainer> */}
+            </ResponsiveContainer>
             <div style={{ ...lastEntryStyle }} >
-                <Title style={{ margin: '0', fontSize: '100%' }} text={ latestEntry.latestValue.toString() } />
+                <Description style={{ fontSize: '100%', lineHeight: 0 }} text={ latestEntry.latestValue.toString() }/>
                 <div style={{ ...directionStyle }} >
                     {latestEntry.directionIsUp && latestEntry.change > 0 &&
                         <UpArrowIcon size={20} color='#03C04A' ></UpArrowIcon>

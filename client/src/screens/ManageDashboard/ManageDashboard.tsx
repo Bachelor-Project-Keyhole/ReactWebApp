@@ -34,23 +34,23 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
       dashboardId: '5f9e9b0b1c9d440000d3b0a0',
       dashboardName: 'Dashboard 1',
       placeholders: [
-        {
-          positionHeight: 0,
-          positionWidth: 0,
-          sizeHeight: 1,
-          sizeWidth: 1,
-          templateId: '5f9e9b0b1c9d440000d3b0a0',
-          values: [
-            {
-              value: 0,
-              time: '2020-10-30T12:00:00.000Z'
-            }
-          ],
-          change: 0,
-          comparison: true,
-          latestValue: 0,
-          isDirectionUp: true
-        }
+        // {
+        //   positionHeight: 0,
+        //   positionWidth: 0,
+        //   sizeHeight: 1,
+        //   sizeWidth: 1,
+        //   templateId: '5f9e9b0b1c9d440000d3b0a0',
+        //   values: [
+        //     {
+        //       value: 0,
+        //       time: '2020-10-30T12:00:00.000Z'
+        //     }
+        //   ],
+        //   change: 0,
+        //   comparison: true,
+        //   latestValue: 0,
+        //   isDirectionUp: true
+        // }
       ]
     })
   }, [setDashboard])
@@ -111,8 +111,8 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
                   <div>
                    <TemplateCreator handleOnDragStart={handleOnDragStart}/>
                     <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <Button text='Save' onClick={() => {}} />
-                    <Button text='Cancel' onClick={() => {}} />
+                    {/* <Button text='Save' onClick={() => {}} />
+                    <Button text='Cancel' onClick={() => {}} /> */}
                   </div>
                   </div>
                 </div>

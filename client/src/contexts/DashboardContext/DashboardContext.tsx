@@ -60,14 +60,31 @@ export const initialDashboard: IDashboard = {
 }
 
 export interface IDashboardContext {
+  getDashboards: (organizationId: string) => Promise<any[]>
   loadDashboard: (datapoint: any) => Promise<any>
 }
 
 export const DashboardContext = React.createContext<IDashboardContext>({
+  getDashboards: async (organizationId: string) => [],
   loadDashboard: async (datapoint: any) => {}
 })
 
 export const DashboardProvider: React.FC<{ children: any }> = props => {
+  const getDashboards = React.useCallback(async (organizationId: string) => {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: API_URL + '/dashboard/all/' + organizationId,
+        headers: authorizationHeader()
+      })
+      const dashboards = get(response, 'data')
+      console.log('GET DASHBOARDS', dashboards)
+      return dashboards
+    } catch (error) {
+      console.log('error', error)
+    }
+  }, [])
+
   const loadDashboard = React.useCallback(async (dashboardId: string) => {
     try {
       const response = await axios({
@@ -85,6 +102,7 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
 
   return (
         <DashboardContext.Provider value={{
+          getDashboards,
           loadDashboard
         }}>
             {props.children}

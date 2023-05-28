@@ -18,7 +18,7 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
           <Button onClick={onClose} text={'X'} style={{ zIndex: 10, position: 'absolute', top: 0, right: 0 }} />
             {template?.templateType === 'Line' &&
                 <LineChartComponent
-                  componentStyle={{ ...LineChartStyle }}
+                  style={{ ...LineChartStyle }}
                   data={template.datapoints}
                   latestEntry={{
                     latestValue: template.latestEntry.latestValue,
@@ -31,7 +31,7 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
             }
             {template?.templateType === 'Bar' &&
                 <BarChartComponent
-                  componentStyle={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%', height: '100%' }}
                   data={template.datapointEntries}
                   latestEntry={{
                     latestValue: template.latestEntry.latestValue,
@@ -61,12 +61,12 @@ export const wrapperStyles: React.CSSProperties = {
 
 export const LineChartStyle: React.CSSProperties = {
   width: '100%',
-  height: '100%',
+  height: '100%'
   // backgroundColor: 'cyan',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center'
+  // display: 'flex',
+  // flexDirection: 'column',
+  // justifyContent: 'center',
+  // alignItems: 'center'
 }
 
 export default GridElement
