@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import AuthService from '../../contexts/Authentication/AuthService';
 import UserService from '../../contexts/Authentication/UserService';
+import { useAuthServiceContext } from '../../contexts/Authentication/AuthService';
 
 
 export interface NavbarProps {
@@ -22,6 +22,7 @@ const checkLoggedIn = () => {
 const Navbar = ({ links, notLoggedInlinks, style }: NavbarProps): JSX.Element | null => {
   let isLoggedIn = checkLoggedIn();
   const linksToShow = isLoggedIn ? links : notLoggedInlinks;
+  const { logout } = useAuthServiceContext()
 
   const navbarStyle: React.CSSProperties = {
     backgroundColor: '#333',
@@ -67,13 +68,13 @@ const Navbar = ({ links, notLoggedInlinks, style }: NavbarProps): JSX.Element | 
   };
 
   const handleLogout = () => {
-    AuthService.logout();
+    logout();
     isLoggedIn = false;
     window.location.reload();
   };
 
   const getUserRole = () => {
-    return UserService.getUserRole(AuthService.getCurrentUser().user.roles);
+    return UserService.getUserRole(UserService.getCurrentUser().user.roles);
   };
 
   // const showNavbar = () => {
