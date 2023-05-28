@@ -13,6 +13,7 @@ import Profile from './src/screens/Profile/Profile'
 import { AuthServiceProvider } from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
 import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
+import ProtectedRoute from './src/components/ProtectedRoute/ProtectedRoute'
 
 function App (): JSX.Element {
 
@@ -27,8 +28,7 @@ function App (): JSX.Element {
         { to: '/register', text: 'Register' },
         { to: '/login', text: 'Login' },
       ];
-  const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
-    { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
+
   return (
     <WeatherProvider>
         <DatapointProvider>
@@ -39,13 +39,25 @@ function App (): JSX.Element {
         
                 <Routes>
                      <Route path="/" element={<Home/>}/>
-                     <Route path="/menu" element={<Menu/>}/>
-                     <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
-                     <Route path="/manage-organization" element={<ManageOrganization />}/>
+                     <Route path="/menu" element={
+                      <ProtectedRoute requiredRole='Viewer'>
+                        <Menu/>
+                      </ProtectedRoute>}/>
+                     <Route path="/manage-datapoint" element={
+                      <ProtectedRoute requiredRole='Editor' >
+                        <ManageDatapoints/>
+                      </ProtectedRoute>} />
+                     <Route path="/manage-organization" element={
+                       <ProtectedRoute requiredRole='Admin'>
+                         <ManageOrganization />
+                       </ProtectedRoute>}/>
                      <Route path="/login" element={<Login />} />
                      <Route path="/register" element={<Register isNewCompany={true} />} />
                      <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
-                     <Route path='/profile' element={<Profile></Profile>} />
+                     <Route path='/profile' element={
+                      <ProtectedRoute requiredRole='Viewer'>
+                        <Profile />
+                      </ProtectedRoute>} />
                  </Routes>
                  {/* <Home/> */}
                  {/* <Menu/> */}
