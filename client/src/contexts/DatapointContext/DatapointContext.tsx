@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import * as React from 'react'
 import axios from 'axios'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
-import AuthService from '../Authentication/AuthService'
+import UserService from '../Authentication/UserService'
 
 export interface IFormula {
   operation: string
@@ -97,7 +97,7 @@ export const DatapointContext = React.createContext<IDatapointContext>({
 })
 
 export const DatapointProvider: React.FC<{ children: any }> = props => {
-  const user = AuthService.getCurrentUser()
+  const user = UserService.getCurrentUser()
   console.log('USER', user)
 
   const getDatapoints = React.useCallback(async () => {
