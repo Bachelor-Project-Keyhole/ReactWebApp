@@ -2,8 +2,7 @@ import * as React from 'react'
 import { get } from 'lodash'
 import axios from 'axios'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
-
-const API_URL = 'https://localhost:7173/api/v1/organization/'
+import instance from '../Authentication/AxiosInterceptorService'
 
 export interface IOrganization {
     organizationId: string
@@ -35,21 +34,18 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
         const userstr = localStorage.getItem('user')
         if (userstr)
             var user = JSON.parse(userstr)
-        
         return user.user.organizationId
     }
 
     const getOrganizationMembers = React.useCallback(async () => {
         const id = getCurrentOrganizationId()
         try {
-            const response = await axios({
+            const response = await instance({
                 method: 'get',
-                url: API_URL + 'users/' + id,
-                headers: authorizationHeader()
+                url: 'organization/users/' + id
             })
 
             const members = get(response, 'data')
-            console.log(members)
             return members
         } catch (error) {
             console.log(error)
@@ -59,9 +55,8 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
     const changeMemberRole = React.useCallback(
         async (userId: string, setAccessLevel: string) => {
         try {
-            const response = await axios.post(API_URL + 'access',
-                { userId, setAccessLevel },
-                { headers: authorizationHeader() }    
+            const response = await instance.post('organization/access',
+                { userId, setAccessLevel }   
             )
             return response
         } catch (error) {
@@ -71,10 +66,9 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
 
     const removeMember = React.useCallback( async (id: string) => {
         try {
-            const response = await axios({
+            const response = await instance({
                 method: 'delete',
-                url: API_URL + 'remove/user/' + id,
-                headers: authorizationHeader()
+                url: 'organization/remove/user/' + id
             })
             return response
         } catch (error) {
@@ -86,10 +80,9 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
         receiverEmailAddress: string, accessLevel: string, message: string) => {
         var organizationId = getCurrentOrganizationId()
         try {
-            const response = await axios.post(
-                API_URL + 'invite/email',
-                {organizationId, receiverEmailAddress, accessLevel, message},
-                { headers: authorizationHeader() }
+            const response = await instance.post(
+                'organization/invite/email',
+                {organizationId, receiverEmailAddress, accessLevel, message}
             )
         return response.data
         } catch (error) {
@@ -101,8 +94,7 @@ export const ManageOrganizationProvider: React.FC<{ children: any }> = props => 
         async () => {
             var id = getCurrentOrganizationId()
             try {
-                const response = await axios.get(
-                    API_URL + id, { headers: authorizationHeader() })
+                const response = await instance.get('organization/' + id)
                 return get(response, 'data')
             } catch (error) {
                 console.log(error)

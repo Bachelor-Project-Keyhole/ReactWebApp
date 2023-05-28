@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import AuthService from '../../contexts/Authentication/AuthService';
+import { useAuthServiceContext } from '../../contexts/Authentication/AuthService';
 import Button from '../Button';
 import Title from '../Title';
 import { useParams, Navigate } from 'react-router-dom';
@@ -30,6 +30,7 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
 
   const [successful, setSuccessful] = React.useState(false);
   const [message, setMessage] = React.useState('');
+  const { registerCompany, registerUser } = useAuthServiceContext()
 
   const initialValuesCompany: FormValuesCompany = {
     username: '',
@@ -97,7 +98,7 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
     setMessage('');
     setSuccessful(false);
 
-    AuthService.registerCompany(username, email, password, companyName).then(
+    registerCompany(username, email, password, companyName).then(
       (response) => {
         setMessage(response.data.message);
         setSuccessful(true);
@@ -121,7 +122,7 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
     setSuccessful(false);
 
     if(token.token)
-    AuthService.registerUser(username, password, token.token).then(
+    registerUser(username, password, token.token).then(
       (response) => {
         console.log(response.data.message)
         setMessage(response.data.message);
