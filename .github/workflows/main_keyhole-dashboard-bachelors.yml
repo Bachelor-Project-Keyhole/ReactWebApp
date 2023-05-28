@@ -23,6 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          cd client
           npm install
           npm run build --if-present
           npm run test --if-present
@@ -54,3 +55,14 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_664C7055147D4EFE9C264BE88B02F50C }}
           package: .
+          
+  delete-artifact:
+    runs-on: windows-latest
+    needs: deploy
+    
+    steps:
+      - name: Delete Artifact
+        uses: GeekyEggo/delete-artifact@v2.0.0
+        with:
+          # The name of the artifact to delete; multiple names can be supplied on new lines.
+          name: node-app
