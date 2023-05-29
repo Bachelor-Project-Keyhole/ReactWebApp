@@ -4,6 +4,7 @@ import LineChartComponent from '../LineChart/LineChartComponent'
 import { Bar } from 'recharts'
 import BarChartComponent from '../BarChart/BarChartComponent'
 import Button from '../Button/Button'
+import Title from '../Title/Title'
 
 export interface GridElementProps {
   onClose: () => void
@@ -41,32 +42,22 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
                   }}
                   datapointName={'dsa'} />
             }
+            {template?.templateType === 'Numeric' &&
+              <Title text={template.latestEntry.latestValue.toString()} />
+            }
         </div>
   )
 }
 
 export const wrapperStyles: React.CSSProperties = {
-  // display: 'flex',
-  // flexDirection: 'column',
-
-  // justifyContent: 'center',
-  // alignItems: 'center',
   height: '100%',
   width: '100%',
   position: 'relative'
-  // margin: '8px',
-  // backgroundColor: '#F5F5F5'
-
 }
 
 export const LineChartStyle: React.CSSProperties = {
   width: '100%',
   height: '100%'
-  // backgroundColor: 'cyan',
-  // display: 'flex',
-  // flexDirection: 'column',
-  // justifyContent: 'center',
-  // alignItems: 'center'
 }
 
 export default GridElement

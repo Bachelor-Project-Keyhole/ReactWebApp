@@ -9,6 +9,7 @@ import { random } from 'lodash'
 
 interface TemplateCreatorProps {
   handleOnDragStart: (event: React.DragEvent<HTMLDivElement>, template: ITemplatePost) => void
+  dashboardId: string
 }
 
 const styles: React.CSSProperties = {
@@ -47,7 +48,7 @@ const previewStyles: React.CSSProperties = {
 
 }
 
-const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps): JSX.Element => {
+const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateCreatorProps): JSX.Element => {
   const [template, setTemplate] = React.useState<'BarChart' | 'LineChart' | 'Numeric'>('Numeric')
   const [timespan, setTimespan] = React.useState(0)
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
@@ -168,7 +169,7 @@ const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps):
                 onDragStart={(e) => {
                   handleOnDragStart(e, {
                     // templateId: Math.floor(Math.random() * 1000).toString(),
-                    dashboardId: '1',
+                    dashboardId,
                     datapointId,
                     displayType: template,
                     // timeSpan: timespan,

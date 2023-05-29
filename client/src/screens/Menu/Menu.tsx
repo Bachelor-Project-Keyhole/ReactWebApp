@@ -33,10 +33,7 @@ const Menu = (): JSX.Element => {
 
   const handleGetDashboards = React.useCallback(async () => {
     try {
-      console.log('organizationIddd', organizationId)
-
       const dashboards = await getDashboards(organizationId)
-      console.log('DASHBOARDSss', dashboards)
       setDashboards(dashboards)
     } catch (error) {
       console.log('error', error)
@@ -49,40 +46,23 @@ const Menu = (): JSX.Element => {
         `New Dashboard ${dashboards.length + 1}`,
         organizationId
       )
-
-      // navigate('/manage-dashboard/' + dashboard._id)
       navigate('/manage-dashboard')
     } catch (error) {
       console.log('error', error)
     }
   }, [newDashboard, navigate, organizationId])
 
-  const tempCards = dashboards.map((dashboard) => {
+  const tempCards: any[] = dashboards.map((dashboard) => {
     return {
       title: dashboard.name
-      // lastModified: dashboard.name,
-      // description: dashboard.id
-      // nextPageUrl: 'http://localhost:8080/manage-organization'
     }
   })
 
-  console.log('TEMP CARDS', tempCards)
-
-  const dashboardCards = dashboards.concat(
-    // {
-    //   title: 'Dashboard 1',
-    //   lastModified: 'Last modified on 23-05-2023',
-    //   description: 'Description of Dashboard 1'
-    //   // nextPageUrl: 'http://localhost:8080/manage-organization'
-    // },
-    // { ...tempCards },
+  const dashboardCards = tempCards.concat(
     {
       title: 'Create new Dashboard'
-      // nextPageUrl: 'http://localhost:8080/manage-organization'
     }
   )
-
-  console.log('DASHBOARD CARDS', dashboardCards)
 
   React.useLayoutEffect(() => {
     handleGetDashboards()

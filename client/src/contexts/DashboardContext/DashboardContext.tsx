@@ -2,6 +2,7 @@ import * as React from 'react'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
 import axios from 'axios'
 import { get, update } from 'lodash'
+import { ITemplatePost } from '../TemplateContext/TemplateContext'
 
 const API_URL = 'https://localhost:7173/api/v1'
 
@@ -35,7 +36,7 @@ export interface IDashboard {
   placeholders: IDashboardPlaceholder[]
 }
 
-export interface IDashboardPlaceholder {
+export interface IDashboardPlaceholder/* extends ITemplatePost*/ {
   positionHeight: number
   positionWidth: number
   sizeHeight: number
@@ -46,6 +47,10 @@ export interface IDashboardPlaceholder {
   comparison: boolean
   latestValue: number
   isDirectionUp: boolean
+  /**/
+  // values: IDashboardPlaceholderValue[]
+  // change: number
+
 }
 
 export interface IDashboardPlaceholderValue {

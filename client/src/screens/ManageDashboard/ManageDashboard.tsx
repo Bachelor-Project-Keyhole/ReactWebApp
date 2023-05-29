@@ -32,6 +32,7 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
       const response = await loadDashboard(dashboardId)
       if (response) {
         setDashboard(response)
+        console.log('DASHBOAAARD', response)
       }
     } catch (error) {
       console.log('error', error)
@@ -45,8 +46,6 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
       dashboardName: values.dashboardName
     }
     console.log('newDashboard', newDashboard)
-
-    console.log('newDashboard', dashboard)
     try {
       const response = await updateDashboard(newDashboard.dashboardName, newDashboard.dashboardId)
       navigate('/menu')
@@ -63,19 +62,6 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
   }, [dashboard])
 
   const handleOnDragStart = React.useCallback((e: React.DragEvent, newTemplate: ITemplatePost): void => {
-    // const newtemplate = {
-    //   text: 'asd',
-    //   // spanHorizontal: height.toString(),
-    //   // spanVertical: width.toString(),
-    //   component: <GridElement
-    //       text={'Text'}
-    //       style={{
-    //         height: '100%',
-    //         width: '100%'
-    //       }} />,
-    //   blocked: false
-    // }
-
     setDraggedTemplateTemplate(newTemplate)
   }
   , [])
@@ -126,7 +112,7 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
                   draggedTemplate={draggedTemplate} />
                 <div style={{ padding: 8 }}>
                   <div>
-                   <TemplateCreator handleOnDragStart={handleOnDragStart}/>
+                   <TemplateCreator dashboardId={dashboardId || ' '} handleOnDragStart={handleOnDragStart}/>
 
                   </div>
                 </div>

@@ -230,27 +230,26 @@ const DashboardGrid = ({
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
   const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
   // const [newTemplates, setNewTemplates] = React.useState<ITemplate[]>([])
-  const { createTemplate } = useTemplateContext()
+  const { createTemplate, updateTemplate, deleteTemplate } = useTemplateContext()
 
-  const handleOnTemplateCreate = React.useCallback(async (template: ITemplatePost) => {
-    try {
-      const response = await createTemplate(template)
-    } catch (error) {
-      console.log(error)
+  const handleOnTemplateDelete = React.useCallback(async (templateId: string) => {
+    try{
+      const tempBlocks = [...blocks]
+      const index = tempBlocks.findIndex((block) => block.templateId === templateId)
+      tempBlocks.splice(index, 1)
+      setBlocks(tempBlocks)
+      setNewDashboard({
+        ...newDashboard,
+        placeholders: newDashboard.placeholders.filter((placeholder) => placeholder.templateId !== templateId)
+      })
+      await deleteTemplate(templateId)
+       
+      }
+    catch(err){
+      console.log(err)
     }
-  }, [createTemplate])
-
-  const handleOnTemplateDelete = (templateId: string) => {
-    const tempBlocks = [...blocks]
-
-    const index = tempBlocks.findIndex((block) => block.templateId === templateId)
-    tempBlocks.splice(index, 1)
-    setBlocks(tempBlocks)
-    setNewDashboard({
-      ...newDashboard,
-      placeholders: newDashboard.placeholders.filter((placeholder) => placeholder.templateId !== templateId)
-    })
   }
+  , [blocks, newDashboard])
 
   React.useEffect(() => {
     setNewDashboard(dashboard)
@@ -273,7 +272,6 @@ const DashboardGrid = ({
             onClose={
               () => {
                 handleOnTemplateDelete(placeholder.templateId)
-                console.log('TEMPLATEID' + placeholder.templateId)
               }
             }
             text={placeholder.templateId}
@@ -309,8 +307,15 @@ const DashboardGrid = ({
       tempNewTemplates.push(draggedTemplate)
       setNewTemplates(tempNewTemplates)
 
-      await handleOnTemplateCreate(draggedTemplate)
-
+      // await handleOnTemplateCreate(draggedTemplate)
+      const draggedTemplateWithPosition = {
+        ...draggedTemplate,
+        positionWidth: i,
+        positionHeight: j
+      }
+      console.log('DraggedTemplateyy', draggedTemplateWithPosition)
+      const response = await createTemplate(draggedTemplateWithPosition)
+      console.log('TEMPLATEUPDATERESOPNSE', response)
       const tempBlocks = [...blocks]
       tempBlocks.push({
         x: i,
@@ -319,19 +324,6 @@ const DashboardGrid = ({
         height: 1,
         templateId: '123',
         component: <></>
-      // <GridElement
-      //   onClose={
-      //     () => {
-      //       // tempArray[i][j] = null
-      //       // setNewGridElements(tempArray)
-      //       // handleOnTemplateDelete(draggedTemplate.templateType)
-      //     }}
-      //   text={draggedTemplate.templateType}
-      //   template={draggedTemplate}
-      //   style={{
-      //     height: '100%',
-      //     width: '100%'
-      //   }} />
       })
       setBlocks(tempBlocks)
       setNewDashboard(
@@ -367,24 +359,10 @@ const DashboardGrid = ({
         }
 
       )
+      return response
     } catch (error) {
       console.log(error)
     }
-    // tempArray[i][j] = {
-    //   text: draggedTemplate.templateType,
-    //   spanHorizontal: draggedTemplate.spanHorizontal,
-    //   spanVertical: draggedTemplate.spanVertical
-    // }
-
-    // This will be removed when the resize is done
-    // if (draggedTemplate.spanHorizontal > 1 || draggedTemplate.spanVertical > 1) {
-    //   for (let k = 0; k < draggedTemplate.spanHorizontal; k++) {
-    //     for (let l = 0; l < draggedTemplate.spanVertical; l++) {
-    //       tempArray[i + k][j + l].blocked = true
-    //     }
-    //   }
-    // }
-    // setNewGridElements(tempArray)
   }
   , [draggedTemplate, blocks])
 
@@ -393,14 +371,21 @@ const DashboardGrid = ({
     // increase the size of the element when enters the drop zone
   }
 
-  // needs a solution for the grid elements bigger than 1x1. Probably need
-  // to store the coordinates and the size of the grid elements
-  // and if a grid element is bigger than 1x1, the other covered coordinates
-  // will be changed to blocked state
 
   const j = 0
 
-  const handleResize = (index: number, newWidth: number, newHeight: number) => {
+  const handleResize = React.useCallback(async (index: number, newWidth: number, newHeight: number) => {
+    const placeholder = dashboard.placeholders[index]
+    // const tempTemplate: ITemplatePost = { 
+    //   dashboardId: dashboard.dashboardId,
+    //   datapointId: placeholder.datapointId,
+    //   displayType
+    //   sizeWidth: newWidth,
+    //   sizeHeight: newHeight
+    // }
+
+    //const respones = await updateTemplate(tempTemplate)
+
     setBlocks((prevBlocks: any) => {
       const updatedBlocks = [...prevBlocks]
       updatedBlocks[index] = { ...updatedBlocks[index], width: newWidth, height: newHeight }
@@ -420,7 +405,7 @@ const DashboardGrid = ({
       }
       return updatedBlocks
     })
-  }
+  }, [blocks])
 
   return (
         <div style={{ ...wrapperStyles, ...style }}>
@@ -507,45 +492,23 @@ export const wrapperStyles: React.CSSProperties = {
   flexDirection: 'column',
   justifyContent: 'space-between',
   alignItems: 'center',
-  // width: '100%',
-  // height: '100%',
   maxWidth: '75vw',
   minWidth: '900px',
   maxHeight: '90vh',
   minHeight: '490px',
   aspectRatio: '8 / 4'
-  // backgroundColor: '#f1f100'
 }
 
 export const innerStyles: React.CSSProperties = {
-  // width: '100%',
   height: '100%',
   padding: '10px',
   display: 'grid',
   gridTemplateColumns: 'repeat(8, 1fr)',
   gridTemplateRows: 'repeat(4, 1fr)',
   aspectRatio: '8 / 4'
-  // gridTemplateAreas: `
-  //   "1 2 3 4 5 6 7 8"
-  //   "9 10 11 12 13 14 15 16"
-  //   "17 18 19 20 21 22 23 24"
-  //   "25 26 27 28 29 30 31 32"
-  // `,
-  // gridTemplateAreas: `
-  //   "a b c d e f g h"
-  //   "i j k l m n o p"
-  //   "q r s t u v w x"
-  //   "y z aa bb cc dd ee ff"
-  // `,
-  // backgroundColor: '#f1f5a1'
 }
 
 export const elementStyles: React.CSSProperties = {
-  // display: 'flex',
-  // flexDirection: 'column',
-  // width: '12.5%'
-  // gridColumn: '1 / span 1',
-  // gridRow: '1 / span 1',
   backgroundColor: 'transparent',
   border: '1px dashed black',
   zIndex: 1,
@@ -553,12 +516,8 @@ export const elementStyles: React.CSSProperties = {
 }
 
 export const gridElementStyle: React.CSSProperties = {
-  // gridColumn: '1 / span 1',
-  // gridRow: '1 / span 1',
-  // backgroundColor: 'red',
   border: '2px dashed black',
   zIndex: 1,
-  // cursor: 'se-resize',
   padding: 5,
   margin: 2,
   aspectRatio: '1 / 1'
