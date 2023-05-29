@@ -43,10 +43,10 @@ const Home = ({ ...props }: any): any => {
 }
 
 const entry: ILatestEntry = {
-    latestValue: 3,
-    change: 12, 
-    directionIsUp: false,
-    comparisonIsAbsolute: false
+  latestValue: 3,
+  change: 12,
+  directionIsUp: false,
+  comparisonIsAbsolute: false
 }
 
 export const containerStyle: React.CSSProperties = {

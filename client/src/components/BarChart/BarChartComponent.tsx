@@ -1,44 +1,48 @@
 import * as React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import SubHeader from '../SubHeader/SubHeader'
-import { IDatapointEntry, ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
+import { type IDatapointEntry, type ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
 import UpArrowIcon from '../UpArrowIcon/UpArrowIcon'
 import DownArrowIcon from '../DownArrowIcon/DownArrowIcon'
 import Title from '../Title/Title'
 
 export interface BarChartComponentProps {
-    componentStyle: React.CSSProperties
-    data: IDatapointEntry[]
-    latestEntry: ILatestEntry
-    datapointName: string
+  data: IDatapointEntry[]
+  latestEntry: ILatestEntry
+  datapointName: string
+  style?: React.CSSProperties
+}
+
+export const wrapperStyle: React.CSSProperties = {
+  width: 200,
+  height: 200
 }
 
 export const barChartStyle: React.CSSProperties = {
-    width: '500',
-    height: '500'
+  width: '500',
+  height: '500'
 }
 
 export const lastEntryStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    placeItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  placeItems: 'center'
 }
 
 export const nameStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'center'
+  display: 'flex',
+  justifyContent: 'center'
 }
 
 export const directionStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    placeItems: 'center'
+  display: 'flex',
+  flexDirection: 'row',
+  placeItems: 'center'
 }
 
-const BarChartComponent = ({componentStyle, data, datapointName, latestEntry, ...props}: BarChartComponentProps ): JSX.Element => {
-
-    return (
-        <div style={{ ...componentStyle }}>
+const BarChartComponent = ({ data, datapointName, latestEntry, style, ...props }: BarChartComponentProps): JSX.Element => {
+  return (
+        <div style={{ ...wrapperStyle, ...style }}>
             <div style={{ ...nameStyle }}>
                 <SubHeader text={datapointName} />
             </div>
@@ -53,9 +57,9 @@ const BarChartComponent = ({componentStyle, data, datapointName, latestEntry, ..
                 </BarChart>
             </ResponsiveContainer>
             <div style={{ ...lastEntryStyle }} >
-                <Title style={{ margin: '0'}} text={ latestEntry.latestValue.toString() } />
+                <Title style={{ margin: '0' }} text={ latestEntry.latestValue.toString() } />
                 <div style={{ ...directionStyle }} >
-                    {latestEntry.directionIsUp && latestEntry.change > 0 && 
+                    {latestEntry.directionIsUp && latestEntry.change > 0 &&
                         <UpArrowIcon size={20} color='#03C04A' ></UpArrowIcon>
                     }
                     {latestEntry.directionIsUp && latestEntry.change < 0 &&
@@ -76,7 +80,7 @@ const BarChartComponent = ({componentStyle, data, datapointName, latestEntry, ..
                 </div>
             </div>
         </div>
-    )
+  )
 }
 
 export default BarChartComponent

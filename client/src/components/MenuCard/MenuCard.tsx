@@ -1,34 +1,34 @@
-import * as React from 'react';
-import { useState } from 'react';
+import * as React from 'react'
+import { useState } from 'react'
 
 export interface MenuCardProps {
-  title: string;
-  lastModified?: string;
-  description?: string;
-  imagePath?: string; // Add imagePath prop
-  nextPageUrl?: string;
-  onClick?: () => void;
+  title: string
+  lastModified?: string
+  description?: string
+  imagePath?: string // Add imagePath prop
+  nextPageUrl?: string
+  onClick?: () => void
 }
 
 const MenuCard: React.FC<MenuCardProps> = ({ title, lastModified, description, imagePath, nextPageUrl, onClick }) => {
-  const [hovered, setHovered] = useState<boolean>(false);
+  const [hovered, setHovered] = useState<boolean>(false)
 
   const handleCardClick = () => {
-    if (onClick) {
-      onClick();
+    if (onClick != null) {
+      onClick()
     }
-  };
+  }
 
   const titleStyles: React.CSSProperties = {
     fontSize: '20px',
     fontWeight: 'bold',
-    marginBottom: '8px',
-  };
+    marginBottom: '8px'
+  }
 
   const descriptionStyles: React.CSSProperties = {
     fontSize: '16px',
-    color: '#777',
-  };
+    color: '#777'
+  }
 
   const cardStyles: React.CSSProperties = {
     display: 'flex',
@@ -44,19 +44,19 @@ const MenuCard: React.FC<MenuCardProps> = ({ title, lastModified, description, i
     margin: '10px',
     transition: 'transform 0.3s',
     cursor: 'pointer',
-    transform: hovered ? 'scale(1.1)' : 'scale(1)',
-  };
+    transform: hovered ? 'scale(1.1)' : 'scale(1)'
+  }
 
   return (
     <a href={nextPageUrl} style={{ textDecoration: 'none' }}>
-      <div style={cardStyles} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={handleCardClick}>
+      <div style={cardStyles} onMouseEnter={() => { setHovered(true) }} onMouseLeave={() => { setHovered(false) }} onClick={handleCardClick}>
         {imagePath && <img src={imagePath} alt={title} style={{ marginBottom: '16px', width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }} />}
         <h3 style={titleStyles}>{title}</h3>
         <p style={descriptionStyles}>{lastModified}</p>
         <p style={descriptionStyles}>{description}</p>
       </div>
     </a>
-  );
-};
+  )
+}
 
-export default MenuCard;
+export default MenuCard
