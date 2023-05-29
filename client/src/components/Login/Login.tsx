@@ -45,6 +45,14 @@ const Login = ({ ...props }: LoginProps): any => {
     })
   }
 
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+    event.currentTarget.style.outline = '1px solid #4285f4'
+  }
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+    event.currentTarget.style.outline = ''
+  }
+
   const handleLogin = (formValue: { email: string; password: string }) => {
     const { email, password } = formValue
 
@@ -53,7 +61,7 @@ const Login = ({ ...props }: LoginProps): any => {
 
     login(email, password)
       .then(() => {
-        setRedirect('/profile');
+        setRedirect('/menu');
       })
       .catch((error) => {
         const resMessage =
@@ -89,14 +97,16 @@ const Login = ({ ...props }: LoginProps): any => {
           <Form>
             <div style={inputGroupStyle}>
               <label htmlFor="email">E-mail</label>
-              <Field name="email" type="email" style={inputStyle} />
+              <Field name="email" type="email" style={inputStyle}
+                onFocus={ handleFocus } onBlur={ handleBlur } />
               <div style={errorMessageStyle}>
                 <ErrorMessage name="email" />
               </div>
             </div>
             <div style={inputGroupStyle}>
               <label htmlFor="password">Password</label>
-              <Field name="password" type="password" style={inputStyle} />
+              <Field name="password" type="password" style={inputStyle}
+                onFocus={ handleFocus } onBlur={ handleBlur } />
               <div style={errorMessageStyle}>
                 <ErrorMessage name="password" />
               </div>
@@ -116,6 +126,7 @@ const componentStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    background: 'white',
     alignItems: 'center',
     width: '40vh',
     height: '50vh',
@@ -152,6 +163,7 @@ const mainDivStyle: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
+  background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
 }
 
 const buttonStyle: React.CSSProperties = {

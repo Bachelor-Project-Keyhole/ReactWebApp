@@ -13,7 +13,7 @@ const Popup = ({ onClose, style, ...props }: PopupProps): JSX.Element => {
     <div style={overlayStyle}>
         <div style={{ ...wrapperStyles, ...style }}>
           <div style={{ position: 'absolute', top: 20, right: 20 }}>
-            <Button text='Close' onClick={onClose}/>
+            <Button text='Close' onClick={onClose} style={{ ...dangerButtonStyle }} />
           </div>
             {props.children}
         </div>
@@ -26,12 +26,13 @@ export const wrapperStyles: React.CSSProperties = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '400px',
+  width: 'auto',
   height: 'auto',
   backgroundColor: '#fff',
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
   zIndex: 1000,
-  padding: '20px'
+  padding: '20px',
+  borderRadius: 5
 }
 
 export const overlayStyle: React.CSSProperties = {
@@ -41,8 +42,16 @@ export const overlayStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
   zIndex: 999,
-  backgroundColor: rgba(0, 0, 0, 0.5)
+  backgroundColor: rgba(0, 0, 0, 0.5),
   // backdrop-filter: blur(5px), /* Add blur effect */
+}
+
+export const dangerButtonStyle: React.CSSProperties = {
+  borderRadius: 5,
+  border: '0px',
+  backgroundColor: '#FF0000',
+  color: 'white',
+  height: '2vh'
 }
 
 export default Popup

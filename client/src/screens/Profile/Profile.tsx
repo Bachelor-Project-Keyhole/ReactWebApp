@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 import { IUserResponse } from '../../types/user.type'
 import UserService from '../../contexts/Authentication/UserService'
+import SubHeader from '../../components/SubHeader/SubHeader';
 
 type Props = {};
 
@@ -39,19 +40,19 @@ export default class Profile extends Component<Props, State> {
     const { currentUser } = this.state;
 
     return currentUser.user?.id && currentUser.user?.roles ? (
-      <div className="container">
+      <div style={{ ...wrapperStyles }}>
+        <div style={{ ...componentStyles }}>
         {(this.state.userReady) ?
           <div>
-            <header className="jumbotron">
-              <h3>Profile</h3>
-            </header>
+            <SubHeader text='Profile' />
             <p>
               <strong>Email:</strong>{" "}
               {currentUser.user.email}
             </p>
-            <strong>Authorities: </strong>
+            <strong>Authority: </strong>
             {UserService.getUserRole(currentUser.user.roles)}
           </div> : null}
+        </div>
       </div>
     ) :
     (
@@ -59,4 +60,27 @@ export default class Profile extends Component<Props, State> {
       </>
     )
   }
+}
+
+export const wrapperStyles: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
+}
+
+const componentStyles: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  background: 'white',
+  alignItems: 'center',
+  width: '40vh',
+  height: '50vh',
+  borderRadius: 25,
+  border: '3px solid #D3D3D3',
+  paddingBottom: '1vh',
+  paddingTop: '2vh',
 }

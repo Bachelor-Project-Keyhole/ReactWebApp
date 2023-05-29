@@ -13,52 +13,47 @@ import Profile from './src/screens/Profile/Profile'
 import { AuthServiceProvider } from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
 import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
-import ManageDashboard from './src/screens/ManageDashboard/ManageDashboard'
-import { DashboardProvider } from './src/contexts/DashboardContext/DashboardContext'
-import { TemplateContext, TemplateProvider } from './src/contexts/TemplateContext/TemplateContext'
+import ProtectedRoute from './src/components/ProtectedRoute/ProtectedRoute'
+import Error from './src/screens/Error/Error'
 
 function App (): JSX.Element {
-  const links = [
-    { to: '/menu', text: 'Menu' },
-    { to: '/manage-datapoint', text: 'Manage Datapoint' },
-    { to: '/manage-organization', text: 'Manage Organization' },
-    { to: '/profile', text: 'Profile' },
-    { to: '/', text: 'Logout' }
-  ]
-  const notLoggedInlinks = [
-    { to: '/register', text: 'Register' },
-    { to: '/login', text: 'Login' }
-  ]
-  const users = [{ name: 'Tamas', email: 'Tamas@Tamas.com', role: 'admin', status: 'accepted' },
-    { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
+
   return (
     <WeatherProvider>
-      <TemplateProvider>
-        <DashboardProvider>
-          <DatapointProvider>
-              <ManageOrganizationProvider>
-                <AuthServiceProvider>
-                  <Navbar links={links} notLoggedInlinks = {notLoggedInlinks} />
-            {/* Rest of your application */}
-
-                  <Routes>
-                      <Route path="/" element={<Home/>}/>
-                      <Route path="/menu" element={<Menu/>}/>
-                      <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
-                      <Route path="/manage-organization" element={<ManageOrganization />}/>
-                      <Route path="/manage-dashboard/:dashboardId" element={<ManageDashboard />}/>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register isNewCompany={true} />} />
-                      <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
-                      <Route path='/profile' element={<Profile></Profile>} />
-                  </Routes>
-                  {/* <Home/> */}
-                  {/* <Menu/> */}
-                </AuthServiceProvider>
-              </ManageOrganizationProvider>
-          </DatapointProvider>
-        </DashboardProvider>
-      </TemplateProvider>
+        <DatapointProvider>
+            <ManageOrganizationProvider>
+              <AuthServiceProvider>
+                <Navbar />
+          {/* Rest of your application */}
+        
+                <Routes>
+                     <Route path="/" element={<Home/>}/>
+                     <Route path='/error' element={<Error />} />
+                     <Route path="/menu" element={
+                      <ProtectedRoute requiredRole='Viewer'>
+                        <Menu/>
+                      </ProtectedRoute>}/>
+                     <Route path="/manage-datapoint" element={
+                      <ProtectedRoute requiredRole='Editor' >
+                        <ManageDatapoints/>
+                      </ProtectedRoute>} />
+                     <Route path="/manage-organization" element={
+                       <ProtectedRoute requiredRole='Admin'>
+                         <ManageOrganization />
+                       </ProtectedRoute>}/>
+                     <Route path="/login" element={<Login />} />
+                     <Route path="/register" element={<Register isNewCompany={true} />} />
+                     <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
+                     <Route path='/profile' element={
+                      <ProtectedRoute requiredRole='Viewer'>
+                        <Profile />
+                      </ProtectedRoute>} />
+                 </Routes>
+                 {/* <Home/> */}
+                 {/* <Menu/> */}
+              </AuthServiceProvider>
+            </ManageOrganizationProvider>
+        </DatapointProvider>
     </WeatherProvider>
 
   )

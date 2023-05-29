@@ -5,7 +5,7 @@ import Header from '../../components/Header/Header'
 import Divider from '../../components/Divider/Divider'
 import Title from '../../components/Title/Title'
 import Button from '../../components/Button'
-import DatapointCard from '../../components/DatapointCard/DatapointCard'
+import DatapointCard, { titleStyles } from '../../components/DatapointCard/DatapointCard'
 
 import { Formik, Field, Form, ErrorMessage, type FormikHelpers, type FormikValues } from 'formik'
 import * as Yup from 'yup'
@@ -97,6 +97,14 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
     }
   }
 
+  const handleFocus = (event: React.FocusEvent<HTMLButtonElement>) => {
+    event.currentTarget.style.outline = '1px solid #4285f4'
+  }
+
+  const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
+    event.currentTarget.style.outline = ''
+  }
+
   React.useLayoutEffect(() => {
     handleGetDatapoints()
     console.log('DATAPOINTS: ' + datapoints.toString())
@@ -107,11 +115,10 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
             <div style={{ ...wrapperStyles, ...style }}>
             <div style={{ ...innerStyles }}>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Title text={'Manage Datapoints'}/>
+                <Title text={'Manage Datapoints'} style={{ ...titleStyle }} />
                 {/* <Button text={'+'} />
                 <button onClick={handleGetDatapoints}>Get Datapoints</button> */}
               </div>
-                <div style={{ backgroundColor: 'lightgrey', height: 24 }}>searchbar</div>
                 <Divider />
                 <CardList
                 cardType='DatapointCard'
@@ -136,12 +143,14 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                       <SubHeader text='Display Name' />
-                      <Field name="displayName" placeholder={initialValues.displayName}/>
+                      <Field name="displayName" placeholder={initialValues.displayName}
+                        style={{ ...inputStyle }} onFocus={ handleFocus } onBlur={ handleBlur } />
                       <ErrorMessage name="displayName" />
                     </div>
                     <div>
                       <SubHeader text='Key' />
-                      <Field name="key" value={initialValues.dataPointKey} disabled style={{ ...datapointKeyStyles }}/>
+                      <Field name="key" value={initialValues.dataPointKey}
+                        disabled style={{ ...datapointKeyStyles }} />
                     </div>
                   </div>
                   <Divider />
@@ -183,12 +192,15 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                       <Description text='Substract' style={{ margin: 0 }} />
                     </div>
                     <Divider />
-                    <Field name="factor" placeholder={values.factor} />
+                    <Field name="factor" placeholder={values.factor}
+                      style={{ ...inputStyle }}  onFocus={ handleFocus } onBlur={ handleBlur }  />
                   </div>
                   <Divider size={2} />
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                      <Button text={'Save Datapoint'} type='submit' style={{ marginRight: 16 }} onClick={() => { submitAction = 'save' }} />
-                      <Button text={'Save As New Datapoint'} type='submit' onClick={() => { submitAction = 'saveAsNew' }} />
+                      <Button text={'Save Datapoint'} type='submit'
+                        style={{ ...primaryButtonStyle, marginRight: 16 }} onClick={() => { submitAction = 'save' }} />
+                      <Button text={'Save As New Datapoint'} type='submit'
+                        onClick={() => { submitAction = 'saveAsNew' }} style={{ ...primaryButtonStyle }} />
                   </div>
                 </Form>
                 )}
@@ -205,9 +217,11 @@ export const wrapperStyles: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
-  backgroundColor: '#f1f1f1'
-  // margin: '0',
-  // padding: '50px',
+  background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
+}
+
+export const titleStyle: React.CSSProperties = {
+  color: 'white'
 }
 
 export const innerStyles: React.CSSProperties = {
@@ -224,7 +238,28 @@ export const innerStyles: React.CSSProperties = {
 export const datapointKeyStyles: React.CSSProperties = {
   backgroundColor: '#f0f0f0',
   color: '#a0a0a0',
-  cursor: 'not-allowed'
+  cursor: 'not-allowed',
+  borderRadius: 5,
+  border: '1px solid #D3D3D3',
+  height: '2vh',
+  width: '20vh'
+}
+
+const inputStyle: React.CSSProperties = {
+  borderRadius: 5,
+  border: '1px solid #D3D3D3',
+  height: '2vh',
+  width: '20vh',
+  marginRight: '3vh',
+}
+
+export const primaryButtonStyle: React.CSSProperties = {
+  borderRadius: 5,
+  backgroundColor: '#4285f4',
+  border: '1px solid #0275d8',
+  color: 'white',
+  marginTop: '2vh',
+  height: '3vh'
 }
 
 export default ManageDatapoints
