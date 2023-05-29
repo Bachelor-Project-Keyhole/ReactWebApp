@@ -14,6 +14,8 @@ export interface IAuthServiceContext {
         organizationName: string) => Promise<any>
     registerUser: (
       fullName: string, password: string, token: string) => Promise<any>,
+    requestPasswordReset: (email: string) => Promise<any>,
+    resetPassword: (password: string, token: string) => Promise<any>
 }
 
 export const AuthServiceContext = React.createContext<IAuthServiceContext>({
@@ -21,7 +23,9 @@ export const AuthServiceContext = React.createContext<IAuthServiceContext>({
   logout: async () => {},
   registerCompany: async (fullName: string, email: string, password: string,
     organizationName: string) => {},
-  registerUser: async (fullName: string, password: string, token: string) => {}
+  registerUser: async (fullName: string, password: string, token: string) => {},
+  requestPasswordReset: async (email: string) => {},
+  resetPassword: async (password: string, token: string) => {}
 })
 
 export const AuthServiceProvider: React.FC<{ children: any }> = props => {
@@ -69,16 +73,36 @@ export const AuthServiceProvider: React.FC<{ children: any }> = props => {
         }
       }, [])
 
-    const registerUser = React.useCallback(async (fullName: string, password: string, token: string) => {
-      return instance.post('organization/register/' + token, {
-        fullName,
-        password
-      })
+    const registerUser = React.useCallback(async (
+      fullName: string, password: string, token: string) => {
+        return instance.post('organization/register/' + token, {
+          fullName,
+          password
+        })
+    }, [])
+
+    const requestPasswordReset = React.useCallback(async (email: string) => {
+      try {
+        const response = instance.post('organization/password/send/email', {email})
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    }, [])
+
+    const resetPassword = React.useCallback(async (password: string, token: string) => {
+      try {
+        const response = instance.post('organization/password/reset', {password, token})
+        return response
+      } catch (error) {
+        console.log(error)
+      }
     }, [])
 
     return (
-      <AuthServiceContext.Provider value={{ login, logout, registerUser, registerCompany }} >
-        {props.children}
+      <AuthServiceContext.Provider value={{ login, logout, registerUser,
+        registerCompany, requestPasswordReset, resetPassword }} >
+          {props.children}
       </AuthServiceContext.Provider>
     )
 }

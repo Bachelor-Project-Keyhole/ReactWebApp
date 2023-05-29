@@ -18,6 +18,8 @@ import Error from './src/screens/Error/Error'
 import { TemplateProvider } from './src/contexts/TemplateContext/TemplateContext'
 import { DashboardProvider } from './src/contexts/DashboardContext/DashboardContext'
 import ManageDashboard from './src/screens/ManageDashboard/ManageDashboard'
+import PasswordReset from './src/components/PasswordResetEmail/PasswordReset'
+import PasswordResetEmail from './src/components/PasswordReset/PasswordResetEmail'
 
 function App (): JSX.Element {
 
