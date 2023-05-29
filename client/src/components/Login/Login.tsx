@@ -56,7 +56,7 @@ const Login = ({ ...props }: LoginProps): any => {
         const resMessage =
           (error.response &&
             error.response.data &&
-            error.response.data.message) ||
+            error.response.data.errorMessage) ||
           error.message ||
           error.toString()
 

@@ -129,7 +129,7 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
       },
       (error) => {
         const resMessage =
-          (error.response && error.response.data && error.response.data.message) ||
+          (error.response && error.response.data && error.response.data.errorMessage) ||
           error.message ||
           error.toString();
 
