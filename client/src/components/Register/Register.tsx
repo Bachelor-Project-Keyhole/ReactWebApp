@@ -166,7 +166,15 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                 {!successful && (
                   <div>
                     <div style={{ ...inputGroupStyle }}>
-                      <label htmlFor="username">Name</label>
+                      <label htmlFor="companyName">Organization name</label>
+                      <Field name="companyName" type="text" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur }  />
+                      <div style={{ ...errorMessageStyle}}>
+                        <ErrorMessage name="companyName" />
+                      </div>
+                    </div>
+                    <div style={{ ...inputGroupStyle }}>
+                      <label htmlFor="username">Owner's нame</label>
                       <Field name="username" type="text" style={{ ...inputStyle }}
                         onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
@@ -198,14 +206,6 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                       </div>
                     </div>
                     <div>
-                      <div style={{ ...inputGroupStyle }}>
-                        <label htmlFor="companyName">Company name</label>
-                        <Field name="companyName" type="text" style={{ ...inputStyle }}
-                          onFocus={ handleFocus } onBlur={ handleBlur }  />
-                        <div style={{ ...errorMessageStyle}}>
-                          <ErrorMessage name="companyName" />
-                        </div>
-                      </div>
                       <div style={{ ...inputGroupStyle }}>
                         <Button text="Sign up" type="submit" style={{ ...buttonStyle }} />
                       </div>
@@ -336,7 +336,8 @@ const buttonStyle: React.CSSProperties = {
     borderRadius: 5,
     backgroundColor: '#0275d8',
     border: '2px solid #0275d8',
-    color: 'white'
+    color: 'white',
+    width: '30%'
 }
 
 export default Register
