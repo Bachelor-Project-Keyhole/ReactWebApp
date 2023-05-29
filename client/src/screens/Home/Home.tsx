@@ -8,7 +8,7 @@ import Title from '../../components/Title'
 import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
 import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 import { IDatapointEntry, ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
-
+import Logo from '../../components/Logo/Logo'
 
 const Home = ({ ...props }: any): any => {
   const { temperature, getTemperature } = useWeatherContext()
@@ -34,23 +34,11 @@ const Home = ({ ...props }: any): any => {
   }, [handleTemperature])
 
   return (
-    <>
-      <div>{'Weather Temperature:'} + {temperature}  </div>
-      <Title text="Home" />
-      <Header text="Header" />
-      <SubHeader text="SubHeader" />
-      <SubHeader text={ user.name } />
-      <Description text="Description Description Description Description Description Description Description Description" />
-      <Button text="Button" icon={<PlusIcon/>} style={{ backgroundColor: 'black', color: 'white' }} />
-      <Button text="Button" icon={<PlusIcon color="red"/>} />
-      {/* <Popup>
-        <Title text="Popup" />
-        <Header text="Header" />
-        <SubHeader text="SubHeader" />
-        <Description text="Description Description Description Description Description Description Description Description" />
-        <Button text="Button" icon={<PlusIcon/>} style={{ backgroundColor: 'black', color: 'white' }} />
-      </Popup> */}
-    </>
+    <div style={{ ...mainDivStyle }}>
+      <div style={{ marginTop: '5%'}}>
+        <Logo />
+      </div>
+    </div>
   )
 }
 
@@ -65,6 +53,17 @@ export const containerStyle: React.CSSProperties = {
   width: '50vh',
   height: '50vh',
   padding: '10vh'
+}
+
+export const componentStyle: React.CSSProperties = {
+  
+}
+
+const mainDivStyle: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  height: '100vh',
+  background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
 }
 
 export default Home

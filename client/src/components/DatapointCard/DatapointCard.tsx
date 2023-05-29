@@ -52,9 +52,10 @@ export const valueStyles: React.CSSProperties = {
 export const buttonStyles: React.CSSProperties = {
   width: 100,
   height: 24,
-  backgroundColor: 'lightgrey',
+  backgroundColor: '#4285f4',
+  color: 'white',
   borderRadius: 8,
-  border: '1px solid black',
+  border: '0px',
   fontSize: 16,
   fontWeight: 'bold',
   cursor: 'pointer',

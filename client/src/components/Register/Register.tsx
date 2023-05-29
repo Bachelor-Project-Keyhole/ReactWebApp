@@ -5,7 +5,6 @@ import { useAuthServiceContext } from '../../contexts/Authentication/AuthService
 import Button from '../Button';
 import Title from '../Title';
 import { useParams, Navigate } from 'react-router-dom';
-import { fieldStyles } from '../UserCard/UserCard';
 
 type RegisterProps = {
   isNewCompany: boolean;
@@ -140,13 +139,21 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
     )
   }, [])
 
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+    event.currentTarget.style.outline = '1px solid #4285f4'
+  }
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+    event.currentTarget.style.outline = ''
+  }
+
   if (successful) {
-    return <Navigate to="/Home" />;
+    return <Navigate to="/" />;
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '40vh', height: '50vh', borderRadius: 25, border: '3px solid #D3D3D3', paddingBottom: '1vh', paddingTop: '2vh' }}>
+    <div style={{ ...mainDivStyle }}>
+      <div style={{ ...componentStyle }}>
         {isNewCompany ? (
           <>
             <Title text="Sign up company" />
@@ -160,28 +167,32 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                   <div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="username">Name</label>
-                      <Field name="username" type="text" style={{ ...fieldStyles }} />
+                      <Field name="username" type="text" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="username" />
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="email">E-mail</label>
-                      <Field name="email" type="email" style={{ ...fieldStyles }} />
+                      <Field name="email" type="email" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="email" />
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="password">Password</label>
-                      <Field name="password" type="password" style={{ ...fieldStyles }} />
+                      <Field name="password" type="password" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="password" />
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="passwordRepeat">Repeat password</label>
-                      <Field name="passwordRepeat" type="password" style={{ ...fieldStyles }} />
+                      <Field name="passwordRepeat" type="password" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="passwordRepeat" />
                       </div>
@@ -189,7 +200,8 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                     <div>
                       <div style={{ ...inputGroupStyle }}>
                         <label htmlFor="companyName">Company name</label>
-                        <Field name="companyName" type="text" style={{ ...fieldStyles }} />
+                        <Field name="companyName" type="text" style={{ ...inputStyle }}
+                          onFocus={ handleFocus } onBlur={ handleBlur }  />
                         <div style={{ ...errorMessageStyle}}>
                           <ErrorMessage name="companyName" />
                         </div>
@@ -224,21 +236,24 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                   <div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="username">Name</label>
-                      <Field name="username" type="text" style={{ ...fieldStyles }} />
+                      <Field name="username" type="text" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur } />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="username" />
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="password">Password</label>
-                      <Field name="password" type="password" style={{ ...fieldStyles }} />
+                      <Field name="password" type="password" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur } />
                       <div style={{ ...errorMessageStyle }}>
                         <ErrorMessage name="password" />
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
                       <label htmlFor="passwordRepeat">Repeat password</label>
-                      <Field name="passwordRepeat" type="password" style={{ ...fieldStyles }} />
+                      <Field name="passwordRepeat" type="password" style={{ ...inputStyle }}
+                        onFocus={ handleFocus } onBlur={ handleBlur } />
                       <div style={{...errorMessageStyle}}>
                         <ErrorMessage name="passwordRepeat" />
                       </div>
@@ -269,13 +284,15 @@ export const mainDivStyle: React.CSSProperties = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh'
+    height: '100vh',
+    background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
 }
 
 export const componentStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    background: 'white',
     alignItems: 'center',
     width: '40vh',
     height: '50vh',
