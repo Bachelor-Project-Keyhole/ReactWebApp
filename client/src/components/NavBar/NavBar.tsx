@@ -42,10 +42,12 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
       return (
         <nav style={{ ...navbarStyle }}>
           <ul style={{ listStyleType: 'none', margin: '0', padding: '0' }}>
-            <li style={{ ...listItemStyle }}>
-            <NavLink to='/menu' style={{ ...linkStyle }}
-              onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit}  >Home</NavLink>
-            </li>
+            <ProtectedComponent requiredRole='Viewer'>
+              <li style={{ ...listItemStyle }}>
+                <NavLink to='/menu' style={{ ...linkStyle }}
+                  onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit}  >Home</NavLink>
+              </li>
+            </ProtectedComponent>
             <ProtectedComponent requiredRole='Editor'>
               <li style={{ ...listItemStyle }}>
                   <NavLink to='/manage-datapoint' style={{ ...linkStyle }}
@@ -72,6 +74,10 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
             </ProtectedComponent>
             {!isLoggedIn &&
               <>
+                <li style={{ ...listItemStyle }}>
+                  <NavLink to='/' style={{ ...linkStyle }}
+                    onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit}  >Home</NavLink>
+                </li>
                 <li style={{ ...lastListItemStyle }}>
                   <NavLink to='/login' style={{ ...linkStyle }} 
                     onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit} >Sign in</NavLink>
