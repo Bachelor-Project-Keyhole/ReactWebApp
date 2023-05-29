@@ -4,11 +4,11 @@ import SubHeader from '../SubHeader/SubHeader'
 import LineChartComponent from '../LineChart/LineChartComponent'
 import BarChartComponent from '../BarChart/BarChartComponent'
 import { useDatapointContext, type IDatapoint, type IDatapointEntry, type ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
-import { type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
+import { type ITemplatePost, type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
 import { random } from 'lodash'
 
 interface TemplateCreatorProps {
-  handleOnDragStart: (event: React.DragEvent<HTMLDivElement>, template: ITemplate) => void
+  handleOnDragStart: (event: React.DragEvent<HTMLDivElement>, template: ITemplatePost) => void
 }
 
 const styles: React.CSSProperties = {
@@ -48,14 +48,14 @@ const previewStyles: React.CSSProperties = {
 }
 
 const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps): JSX.Element => {
-  const [template, setTemplate] = React.useState('')
+  const [template, setTemplate] = React.useState<'BarChart' | 'LineChart' | 'Numeric'>('Numeric')
   const [timespan, setTimespan] = React.useState(0)
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
   const [datapointEntries, setDatapointEntries] = React.useState<IDatapointEntry[]>([])
   const [latestEntry, setLatestEntry] = React.useState<ILatestEntry>({ latestValue: 0, change: 0, directionIsUp: true, comparisonIsAbsolute: true })
   const { getDatapoints, getDatapointEntries, getLatestEntryWithChange } = useDatapointContext()
   const [datapointId, setDatapointId] = React.useState('')
-  const [timeUnit, setTimeUnit] = React.useState('Day' || 'Week' || 'Month' || 'Year')
+  const [timeUnit, setTimeUnit] = React.useState<'Day' | 'Week' | 'Month' | 'Year'>('Day')
   const [isHoverTemplate, setIsHoverTemplate] = React.useState(false)
 
   const handleGetDatapoints = React.useCallback(async () => {
@@ -125,10 +125,10 @@ const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps):
             </div>
             <div>
                 <SubHeader text='Display type' />
-                <Button text='Line Chart' onClick={() => { setTemplate('Line') }}
-                    style={template == 'Line' ? { ...selectedButtonStyle } : { ...buttonStyle }} />
-                <Button text='Bar Chart' onClick={() => { setTemplate('Bar') }}
-                    style={template == 'Bar' ? { ...selectedButtonStyle } : { ...buttonStyle }} />
+                <Button text='Line Chart' onClick={() => { setTemplate('LineChart') }}
+                    style={template === 'LineChart' ? { ...selectedButtonStyle } : { ...buttonStyle }} />
+                <Button text='Bar Chart' onClick={() => { setTemplate('BarChart') }}
+                    style={template === 'BarChart' ? { ...selectedButtonStyle } : { ...buttonStyle }} />
             </div>
             <div>
                 <SubHeader text='Timespan' />
@@ -137,8 +137,26 @@ const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps):
             </div>
             <div>
                 <SubHeader text='Time unit' />
-                <select style={{ ...selectStyle }} onChange={ e => { setTimeUnit(e.currentTarget.value) }} >
-                    <option key='Day' value='Day' >Day</option>
+                <select style={{ ...selectStyle }} onChange={ e => {
+                  switch (e.currentTarget.value) {
+                    case 'Day':
+                      setTimeUnit('Day')
+                      break
+                    case 'Week':
+                      setTimeUnit('Week')
+                      break
+                    case 'Month':
+                      setTimeUnit('Month')
+                      break
+                    case 'Year':
+                      setTimeUnit('Year')
+                      break
+                    default:
+                      setTimeUnit('Day')
+                      break
+                  }
+                }} >
+                    <option key='Day' value ='Day' >Day</option>
                     <option key='Week' value='Week' >Week</option>
                     <option key='Month' value='Month' >Month</option>
                     <option key='Year' value='Year' >Year</option>
@@ -149,24 +167,31 @@ const TemplateCreator = ({ handleOnDragStart, ...props }: TemplateCreatorProps):
                 draggable
                 onDragStart={(e) => {
                   handleOnDragStart(e, {
-                    templateId: Math.floor(Math.random() * 1000).toString(),
+                    // templateId: Math.floor(Math.random() * 1000).toString(),
+                    dashboardId: '1',
                     datapointId,
-                    templateType: template,
-                    timeSpan: timespan,
-                    datapoints,
-                    datapointEntries,
-                    latestEntry
+                    displayType: template,
+                    // timeSpan: timespan,
+                    timeUnit,
+                    timePeriod: timespan,
+                    positionWidth: 0,
+                    positionHeight: 0,
+                    sizeWidth: 1,
+                    sizeHeight: 1
+                    // datapoints,
+                    // datapointEntries,
+                    // latestEntry
                     // latestEntry
                   })
                 }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 style={{ ...previewStyles, border: isHoverTemplate ? '1px solid black' : 'none' }}>
-                { datapointEntries && template == 'Line' &&
+                { datapointEntries && template === 'LineChart' &&
                     <LineChartComponent
                         data={datapointEntries} latestEntry={latestEntry} datapointName={getDatapointName()} ></LineChartComponent>
                 }
-                { datapointEntries && template == 'Bar' &&
+                { datapointEntries && template === 'BarChart' &&
                     <BarChartComponent
                         data={datapointEntries} latestEntry={latestEntry} datapointName={getDatapointName()} ></BarChartComponent>
                 }

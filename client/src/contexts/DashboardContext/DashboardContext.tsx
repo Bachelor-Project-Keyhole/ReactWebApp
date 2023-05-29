@@ -1,7 +1,7 @@
 import * as React from 'react'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
 import axios from 'axios'
-import { get } from 'lodash'
+import { get, update } from 'lodash'
 
 const API_URL = 'https://localhost:7173/api/v1'
 
@@ -30,7 +30,7 @@ const API_URL = 'https://localhost:7173/api/v1'
 // }
 
 export interface IDashboard {
-  dashboardId: string
+  dashboardId?: string
   dashboardName: string
   placeholders: IDashboardPlaceholder[]
 }
@@ -61,12 +61,16 @@ export const initialDashboard: IDashboard = {
 
 export interface IDashboardContext {
   getDashboards: (organizationId: string) => Promise<any[]>
+  newDashboard: (dashboardName: string, organizationId: string) => Promise<any>
   loadDashboard: (datapoint: any) => Promise<any>
+  updateDashboard: (dashboardName: string, organizationId: string) => Promise<any>
 }
 
 export const DashboardContext = React.createContext<IDashboardContext>({
   getDashboards: async (organizationId: string) => [],
-  loadDashboard: async (datapoint: any) => {}
+  newDashboard: async (dashboardName: string, organizationId: string) => {},
+  loadDashboard: async (datapoint: any) => {},
+  updateDashboard: async (dashboardName: string, organizationId: string) => {}
 })
 
 export const DashboardProvider: React.FC<{ children: any }> = props => {
@@ -80,6 +84,22 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
       const dashboards = get(response, 'data')
       console.log('GET DASHBOARDS', dashboards)
       return dashboards
+    } catch (error) {
+      console.log('error', error)
+    }
+  }, [])
+
+  const newDashboard = React.useCallback(async (dashboardName: string, organizationId: string) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: API_URL + '/dashboard',
+        headers: authorizationHeader(),
+        data: { dashboardName, organizationId }
+      })
+      const newDashboard = get(response, 'data')
+      console.log('NEW DASHBOARD', newDashboard)
+      return newDashboard
     } catch (error) {
       console.log('error', error)
     }
@@ -100,10 +120,29 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
     }
   }, [])
 
+  const updateDashboard = React.useCallback(async (dashboardName: string, dashboardId: string) => {
+    try {
+      console.log('UPDATE DASHBOARD', dashboardName, dashboardId)
+
+      const response = await axios({
+        method: 'put',
+        url: API_URL + '/dashboard',
+        headers: authorizationHeader(),
+        data: { dashboardName, dashboardId }
+      })
+      const newDashboard = get(response, 'data')
+      return newDashboard
+    } catch (error) {
+      console.log('error', error)
+    }
+  }, [])
+
   return (
         <DashboardContext.Provider value={{
           getDashboards,
-          loadDashboard
+          newDashboard,
+          loadDashboard,
+          updateDashboard
         }}>
             {props.children}
         </DashboardContext.Provider>

@@ -14,6 +14,7 @@ import { AuthServiceProvider } from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
 import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
 import ManageDashboard from './src/screens/ManageDashboard/ManageDashboard'
+import { DashboardProvider } from './src/contexts/DashboardContext/DashboardContext'
 
 function App (): JSX.Element {
   const links = [
@@ -31,6 +32,7 @@ function App (): JSX.Element {
     { name: 'Ilia', email: 'Ilia@Tamas.com', role: 'mod', status: 'pending' }]
   return (
     <WeatherProvider>
+      <DashboardProvider>
         <DatapointProvider>
             <ManageOrganizationProvider>
               <AuthServiceProvider>
@@ -42,6 +44,7 @@ function App (): JSX.Element {
                      <Route path="/menu" element={<Menu/>}/>
                      <Route path="/manage-datapoint" element={<ManageDatapoints/>}/>
                      <Route path="/manage-organization" element={<ManageOrganization />}/>
+                     <Route path="/manage-dashboard/:dashboardId" element={<ManageDashboard />}/>
                      <Route path="/login" element={<Login />} />
                      <Route path="/register" element={<Register isNewCompany={true} />} />
                      <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
@@ -52,6 +55,7 @@ function App (): JSX.Element {
               </AuthServiceProvider>
             </ManageOrganizationProvider>
         </DatapointProvider>
+      </DashboardProvider>
     </WeatherProvider>
 
   )

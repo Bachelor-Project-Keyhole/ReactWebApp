@@ -6,14 +6,16 @@ import ResizableBlock from '../ResizableBlock/ResizableBlock'
 import { set } from 'lodash'
 import Block from '../Block'
 import { type BlockProps } from '../Block/Block'
-import { type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
+import { useTemplateContext, type ITemplate, type ITemplatePost } from '../../contexts/TemplateContext/TemplateContext'
 import { type IDashboard, type IDashboardPlaceholder } from '../../contexts/DashboardContext/DashboardContext'
 
 export interface DashboardGridProps {
+  setNewTemplates: any
+  newTemplates: any[]
   style?: React.CSSProperties
   // gridElements?: React.ReactNode[][]
   dashboard: IDashboard
-  draggedTemplate: ITemplate
+  draggedTemplate: ITemplatePost
   gridElements?: any[][]
 }
 
@@ -216,6 +218,8 @@ const initialGridElements = [
 ]
 
 const DashboardGrid = ({
+  setNewTemplates,
+  newTemplates,
   dashboard,
   gridElements = initialGridElements,
   draggedTemplate,
@@ -225,6 +229,16 @@ const DashboardGrid = ({
   const [newDashboard, setNewDashboard] = React.useState<IDashboard>(dashboard)
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
   const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
+  // const [newTemplates, setNewTemplates] = React.useState<ITemplate[]>([])
+  const { createTemplate } = useTemplateContext()
+
+  const handleOnTemplateCreate = React.useCallback(async (template: ITemplatePost) => {
+    try {
+      const response = await createTemplate(template)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [createTemplate])
 
   const handleOnTemplateDelete = (templateId: string) => {
     const tempBlocks = [...blocks]
@@ -247,13 +261,14 @@ const DashboardGrid = ({
     console.log('dashboard', dashboard)
 
     const tempBlocks = new Array<any>()
-    newDashboard.placeholders.forEach((placeholder: IDashboardPlaceholder) => {
-      tempBlocks.push({
-        x: placeholder.positionWidth,
-        y: placeholder.positionHeight,
-        width: placeholder.sizeWidth,
-        height: placeholder.sizeHeight,
-        component:
+    if (newDashboard) {
+      newDashboard.placeholders.forEach((placeholder: IDashboardPlaceholder) => {
+        tempBlocks.push({
+          x: placeholder.positionWidth,
+          y: placeholder.positionHeight,
+          width: placeholder.sizeWidth,
+          height: placeholder.sizeHeight,
+          component:
           <GridElement
             onClose={
               () => {
@@ -280,27 +295,30 @@ const DashboardGrid = ({
               }
 
             />
+        })
       })
-    })
-    setBlocks(tempBlocks)
+      setBlocks(tempBlocks)
+    }
   }, [newDashboard])
 
-  React.useEffect(() => {
-    console.log(
-      'TEMPBLOCKS' + blocks.toString())
-  }, [blocks])
+  const handleOnDrop = React.useCallback(async (e: any, i: number, j: number) => {
+    try {
+      // console.log('BLOCK', draggedTemplate.templateId)
+      // const tempArray = [...newGridElements]
+      const tempNewTemplates = [...newTemplates]
+      tempNewTemplates.push(draggedTemplate)
+      setNewTemplates(tempNewTemplates)
 
-  const handleOnDrop = React.useCallback((e: any, i: number, j: number): void => {
-    console.log('BLOCK', draggedTemplate.templateId)
-    // const tempArray = [...newGridElements]
-    const tempBlocks = [...blocks]
-    tempBlocks.push({
-      x: i,
-      y: j,
-      width: 1,
-      height: 1,
-      templateId: draggedTemplate.templateId,
-      component: <></>
+      await handleOnTemplateCreate(draggedTemplate)
+
+      const tempBlocks = [...blocks]
+      tempBlocks.push({
+        x: i,
+        y: j,
+        width: 1,
+        height: 1,
+        templateId: '123',
+        component: <></>
       // <GridElement
       //   onClose={
       //     () => {
@@ -314,40 +332,44 @@ const DashboardGrid = ({
       //     height: '100%',
       //     width: '100%'
       //   }} />
-    })
-    setBlocks(tempBlocks)
-    setNewDashboard(
-      {
-        ...newDashboard,
-        placeholders: [
-          ...newDashboard.placeholders,
-          {
-            positionWidth: i,
-            positionHeight: j,
-            sizeWidth: 1,
-            sizeHeight: 1,
-            templateId: draggedTemplate.templateId,
-            latestValue: draggedTemplate.latestEntry.latestValue,
-            change: draggedTemplate.latestEntry.change,
-            comparison: draggedTemplate.latestEntry.comparisonIsAbsolute,
-            isDirectionUp: draggedTemplate.latestEntry.directionIsUp,
-            values: []
-            // datapointId: draggedTemplate.datapointId,
-            // timeSpan: draggedTemplate.timeSpan,
-            // datapointEntries: draggedTemplate.datapointEntries,
-            // datapoints: draggedTemplate.datapoints,
-            // templateType: draggedTemplate.templateType,
-            // latestEntry: {
-            //   latestValue: draggedTemplate.latestEntry.latestValue,
-            //   change: draggedTemplate.latestEntry.change,
-            //   comparisonIsAbsolute: draggedTemplate.latestEntry.comparisonIsAbsolute,
-            //   directionIsUp: draggedTemplate.latestEntry.directionIsUp
+      })
+      setBlocks(tempBlocks)
+      setNewDashboard(
+        {
+          ...newDashboard,
+          placeholders: [
+            ...newDashboard.placeholders,
+            {
+              positionWidth: i,
+              positionHeight: j,
+              sizeWidth: 1,
+              sizeHeight: 1,
+              templateId: '123',
+              latestValue: 123,
+              change: 123,
+              comparison: true,
+              isDirectionUp: true,
+              values: []
+              // datapointId: draggedTemplate.datapointId,
+              // timeSpan: draggedTemplate.timeSpan,
+              // datapointEntries: draggedTemplate.datapointEntries,
+              // datapoints: draggedTemplate.datapoints,
+              // templateType: draggedTemplate.templateType,
+              // latestEntry: {
+              //   latestValue: draggedTemplate.latestEntry.latestValue,
+              //   change: draggedTemplate.latestEntry.change,
+              //   comparisonIsAbsolute: draggedTemplate.latestEntry.comparisonIsAbsolute,
+              //   directionIsUp: draggedTemplate.latestEntry.directionIsUp
 
             // }
-          }
-        ]
-      }
-    )
+            }
+          ]
+        }
+
+      )
+    } catch (error) {
+      console.log(error)
+    }
     // tempArray[i][j] = {
     //   text: draggedTemplate.templateType,
     //   spanHorizontal: draggedTemplate.spanHorizontal,

@@ -4,8 +4,10 @@ import Block, { type BlockProps } from '../../components/Block/Block'
 import GridElement from '../../components/GridElement'
 import Button from '../../components/Button/Button'
 import TemplateCreator from '../../components/TemplateCreator/TemplateCreator'
-import { initialTemplate, type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
+import { initialTemplate, useTemplateContext, type ITemplate, type ITemplatePost, initialTemplatePost } from '../../contexts/TemplateContext/TemplateContext'
 import { type IDashboard, useDashboardContext, initialDashboard } from '../../contexts/DashboardContext/DashboardContext'
+import { Field, Form, Formik, type FormikHelpers, type FormikValues } from 'formik'
+import { useParams, useNavigate } from 'react-router-dom'
 
 export interface ManageDashboardProps {
   style?: React.CSSProperties
@@ -14,48 +16,53 @@ export interface ManageDashboardProps {
 const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
   // const [newGridElements, setNewGridElements] = React.useState(gridElements)
   // const [blocks, setBlocks] = React.useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
-  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<ITemplate>(initialTemplate)// template
-  const { loadDashboard } = useDashboardContext()
-  const [dashboard, setDashboard] = React.useState<IDashboard>(initialDashboard)
+  const navigate = useNavigate()
+  const [draggedTemplate, setDraggedTemplateTemplate] = React.useState<ITemplatePost>(initialTemplatePost)// template
+  const { loadDashboard, updateDashboard } = useDashboardContext()
+  const { createTemplate } = useTemplateContext()
+  const [dashboard, setDashboard] = React.useState<any>(initialDashboard)
+  const [newDashboard, setNewDashboard] = React.useState<any>()
+  const [newTemplates, setNewTemplates] = React.useState<any[]>([])
+  const { dashboardId } = useParams()
+  // const [newTemplates, setNewTemplates ] = React.useState<any[]>([])
+  console.log('dashboardIdddd', dashboardId)
 
-  const handleLoadDashboard = React.useCallback(async (dashboardId: string) => {
+  const handleLoadDashboard = React.useCallback(async () => {
     try {
       const response = await loadDashboard(dashboardId)
-      setDashboard(response)
+      if (response) {
+        setDashboard(response)
+      }
     } catch (error) {
       console.log('error', error)
     }
   }, [])
 
-  React.useEffect(() => {
-    // handleLoadDashboard('5f9e9b0b1c9d440000d3b0a0')
-    // Dummy data
-    setDashboard({
-      dashboardId: '5f9e9b0b1c9d440000d3b0a0',
-      dashboardName: 'Dashboard 1',
-      placeholders: [
-        // {
-        //   positionHeight: 0,
-        //   positionWidth: 0,
-        //   sizeHeight: 1,
-        //   sizeWidth: 1,
-        //   templateId: '5f9e9b0b1c9d440000d3b0a0',
-        //   values: [
-        //     {
-        //       value: 0,
-        //       time: '2020-10-30T12:00:00.000Z'
-        //     }
-        //   ],
-        //   change: 0,
-        //   comparison: true,
-        //   latestValue: 0,
-        //   isDirectionUp: true
-        // }
-      ]
-    })
-  }, [setDashboard])
+  const onFormSubmit = React.useCallback(async (values: FormikValues) => {
+    console.log('values', values)
+    const newDashboard = {
+      dashboardId: dashboard.dashboardId,
+      dashboardName: values.dashboardName
+    }
+    console.log('newDashboard', newDashboard)
 
-  const handleOnDragStart = React.useCallback((e: React.DragEvent, newTemplate: ITemplate): void => {
+    console.log('newDashboard', dashboard)
+    try {
+      const response = await updateDashboard(newDashboard.dashboardName, newDashboard.dashboardId)
+      navigate('/menu')
+    } catch (error) {
+      console.log('error', error)
+    }
+    // try {
+    //   const response = await createTemplate(
+    //     {
+
+    //     }
+    //   )
+    // }
+  }, [dashboard])
+
+  const handleOnDragStart = React.useCallback((e: React.DragEvent, newTemplate: ITemplatePost): void => {
     // const newtemplate = {
     //   text: 'asd',
     //   // spanHorizontal: height.toString(),
@@ -99,24 +106,53 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
   // }
   // , [newGridElements, draggedTemplate])
 
+  React.useLayoutEffect(() => {
+    handleLoadDashboard()
+  }, [handleLoadDashboard])
+
+  React.useEffect(() => {
+    console.log('newTemplates', newTemplates)
+    console.log('dashboard', dashboard)
+  }, [newTemplates, dashboard])
   return (
         <div style={{ ...wrapperStyles, ...style }}>
           Manage Dashboard
             <div style={{ ...innerStyles }}>
 
                 <DashboardGrid
+                  setNewTemplates={setNewTemplates}
+                  newTemplates={newTemplates}
                   dashboard={dashboard}
                   draggedTemplate={draggedTemplate} />
                 <div style={{ padding: 8 }}>
                   <div>
                    <TemplateCreator handleOnDragStart={handleOnDragStart}/>
-                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    {/* <Button text='Save' onClick={() => {}} />
-                    <Button text='Cancel' onClick={() => {}} /> */}
-                  </div>
+
                   </div>
                 </div>
 
+            </div>
+            <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', width: '100%' }}>
+                    <Formik
+                      initialValues={{
+                        dashboardName: dashboard ? dashboard.name : ''
+                      }}
+                      onSubmit={function (
+                        values: FormikValues,
+                        formikHelpers: FormikHelpers<FormikValues>): void | Promise<any> {
+                        console.log('FormVALUES', values)
+                        onFormSubmit(values)
+                      } }
+                    >
+                      {({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+                        <Form>
+                          <Field type='input' name='dashboardName' placeholder={dashboard.dashboardName} />
+                          <Button text='Save Dashboard' type='submit' onClick={() => {}} />
+                        </Form>
+                      )}
+                    </Formik>
+
+                    <Button text='Cancel' onClick={() => {}} />
             </div>
 
         </div>
