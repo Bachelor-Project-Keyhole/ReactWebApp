@@ -24,11 +24,13 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
   const handleLinkHover = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const target = event.target as HTMLElement;
     target.style.backgroundColor = '#111';
+    target.style.color = 'white'
   };
 
   const handleLinkHoverExit = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const target = event.target as HTMLElement;
     target.style.backgroundColor = '';
+    target.style.color = 'black'
   };
 
   const handleLogout = () => {
@@ -41,7 +43,7 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
         <nav style={{ ...navbarStyle }}>
           <ul style={{ listStyleType: 'none', margin: '0', padding: '0' }}>
             <li style={{ ...listItemStyle }}>
-            <NavLink to='/' style={{ ...linkStyle }}
+            <NavLink to='/menu' style={{ ...linkStyle }}
               onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit}  >Home</NavLink>
             </li>
             <ProtectedComponent requiredRole='Editor'>
@@ -71,10 +73,12 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
             {!isLoggedIn &&
               <>
                 <li style={{ ...lastListItemStyle }}>
-                  <NavLink to='/login' style={{ ...linkStyle }}>Sign in</NavLink>
+                  <NavLink to='/login' style={{ ...linkStyle }} 
+                    onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit} >Sign in</NavLink>
                 </li>
                 <li style={{ ...lastListItemStyle }}>
-                  <NavLink to='/register' style={{ ...linkStyle }}>Register</NavLink>
+                  <NavLink to='/register' style={{ ...linkStyle }} 
+                    onMouseOver={handleLinkHover} onMouseLeave={handleLinkHoverExit}>Register</NavLink>
                 </li>
               </>
             }
@@ -84,7 +88,7 @@ const Navbar = ({ }: NavbarProps): JSX.Element | null => {
   }
 
 const navbarStyle: React.CSSProperties = {
-  backgroundColor: '#333',
+  backgroundColor: 'white',
   padding: '0',
   overflow: 'hidden',
   width: '100%'
@@ -104,7 +108,7 @@ const lastListItemStyle: React.CSSProperties = {
 
 const linkStyle: React.CSSProperties = {
   display: 'block',
-  color: 'white',
+  color: 'black',
   textAlign: 'center',
   padding: '14px 16px',
   textDecoration: 'none',

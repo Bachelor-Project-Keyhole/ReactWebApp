@@ -11,7 +11,7 @@ const ProtectedRoute = ({ requiredRole, children}: IProtectedRouteProps) => {
     const isAuthorized = UserService.isAuthorized(requiredRole)
     console.log(isAuthorized)
     if(!isAuthorized) {
-        return <Navigate to='/' replace />
+        return <Navigate to='/error' replace />
     }
 
     return children

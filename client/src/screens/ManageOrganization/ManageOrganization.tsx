@@ -134,28 +134,36 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
         
     }, [handleGetOrganizationMembers, handleGetOrganizationDetails])
 
+    const handleFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+        event.currentTarget.style.outline = '1px solid #4285f4'
+    }
+    
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLSelectElement>) => {
+      event.currentTarget.style.outline = ''
+    }
+
     return (
         <>
             <div style={{ ...wrapperStyles }}>
                 <div style={{ ...innerStyles }}>
                     <div style={{ ...topDivStyle }}>
-                        <Title text={ organization.organizationName } />
-                        <Button text='Invite Member' style={ buttonStyle } onClick={addMemberHandler}/>
+                        <Title text={ organization.organizationName } style={{ ...textStyles }} />
+                        <Button text='Invite Member' style={ buttonStyle } onClick={addMemberHandler} />
                     </div>
                     <div style={{ ...descriptionStyle }}>
-                        <p>Api key:&nbsp;&nbsp; </p>
-                        <p>{organization.apiKey}</p>
+                        <p style={{ ...textStyles }} >Api key:&nbsp;&nbsp; </p>
+                        <p style={{ ...textStyles }} >{organization.apiKey}</p>
                     </div>
                     <div style={{ ...descriptionStyle }}>
-                        <p>Creation date:&nbsp;&nbsp; </p>
-                        <p>{organization.creationDate}</p>
+                        <p style={{ ...textStyles }} >Creation date:&nbsp;&nbsp; </p>
+                        <p style={{ ...textStyles }} >{organization.creationDate}</p>
                     </div>
                     <div style={{ ...descriptionStyle }}>
-                        <p>Last modified:&nbsp;&nbsp; </p>
-                        <p>{organization.modificationDate}</p>
+                        <p style={{ ...textStyles }} >Last modified:&nbsp;&nbsp; </p>
+                        <p style={{ ...textStyles }} >{organization.modificationDate}</p>
                     </div>
                     <div>
-                        <CardList cardType='MemberCard' data={ members } editHandler={ editHandler }></CardList> 
+                        <CardList cardType='UserCard' data={ members } editHandler={ editHandler } ></CardList> 
                     </div>
                 </div>
             </div>
@@ -171,13 +179,14 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
                                 </div>
                                 <div style={{ ...inputGroupStyle }}>
                                     <label htmlFor='email'>E-mail address</label>
-                                    <Field name='email' type='email' style={{ ...inputStyle }} />
+                                    <Field name='email' type='email' style={{ ...inputStyle }} 
+                                        onFocus={ handleFocus } onBlur={ handleBlur } />
                                     <ErrorMessage name='email' component='div' className='error' />
                                 </div>
                                 <div style={{ ...inputGroupStyle }} >
                                     <label htmlFor='role'>Role</label>
-                                    <select name='role' style={{ ...inputStyle }}
-                                        onChange={event => handleRoleSet(event.target.value)}>
+                                    <select name='role' style={{ ...inputStyle }} onFocus={ handleFocus }
+                                        onBlur={ handleBlur } onChange={event => handleRoleSet(event.target.value)}>
                                             <option id='0' >Viewer</option>
                                             <option id='1' >Editor</option>
                                             <option id='2' >Admin</option>
@@ -186,7 +195,8 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
                                 </div>
                                 <div style={{ ...inputGroupStyle }}>
                                     <label htmlFor='message'>Message</label>
-                                    <Field name='message' type='text' style={{ ...inputGroupStyle }} />
+                                    <Field name='message' type='text' style={{ ...inputStyle }}
+                                        onFocus={ handleFocus } onBlur={ handleBlur } />
                                 </div>
                                 <div style={{ ...inputGroupStyle }} >
                                     <Button type='submit' text={'Invite'} style={{ ...buttonStyle }} />
@@ -197,17 +207,19 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
             }
             { editModal &&
                 <Popup onClose={() => { setEditModal(false) }}>
-                    <div style={{ ...inputGroupStyle }}>
-                        <select name='role' style={{ ...inputStyle }}
-                            onChange={event => handleRoleChange(event.target.value)}>
+                    <div style={{ ...inputGroupStyle, margin: '4vh' }}>
+                        <label>Select a role </label>
+                        <select name='role' style={{ ...inputStyle }} onFocus={ handleFocus }
+                            onBlur={ handleBlur } onChange={event => handleRoleChange(event.target.value)}>
                                 <option id='0' >Viewer</option>
                                 <option id='1' >Editor</option>
                                 <option id='2' >Admin</option>
                         </select>
                     </div>
-                    <div style={{ ...inputGroupStyle }}>
-                        <Button text='Save' style={{ ...buttonStyle }} onClick={ handleUserEdit } ></Button>
-                        <Button text='Remove user' style={{ ...removeButtonStyle }} onClick={ handleRemoveUser } ></Button>
+                    <div style={{ ...buttonGroupStyle }}>
+                        <Button text='Save' onClick={ handleUserEdit }
+                            style={{ ...buttonStyle, marginRight: '1vh', height: 'auto' }} ></Button>
+                        <Button text='Remove user' style={{ ...dangerButtonStyle }} onClick={ handleRemoveUser } ></Button>
                     </div>
                 </Popup>  
             }
@@ -217,26 +229,31 @@ const ManageOrganization = ({ ...props }: ManageOrganizationProps): any => {
 
 export const buttonStyle: React.CSSProperties = {
     borderRadius: 5,
-    backgroundColor: '#0275d8',
+    backgroundColor: '#4285f4',
     border: '1px solid #0275d8',
+    width: '30%',
     color: 'white',
     marginTop: '2vh',
     height: '3vh'
+}
+
+export const textStyles: React.CSSProperties = {
+    color: 'white'
 }
 
 export const descriptionStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: 'row',
-    
+    flexDirection: 'row',  
 }
 
-export const removeButtonStyle: React.CSSProperties = {
+export const dangerButtonStyle: React.CSSProperties = {
     borderRadius: 5,
+    width: '30%',
     backgroundColor: '#FF0000',
-    border: '1px solid #0275d8',
+    border: '1px solid #FF0000',
     color: 'white',
     marginTop: '2vh',
-    height: '3vh'
+    height: 'auto'
 }
 
 export const topDivStyle: React.CSSProperties = {
@@ -251,8 +268,7 @@ export const wrapperStyles: React.CSSProperties = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    width: '100vh',
-    backgroundColor: '#f1f1f1'
+    background: 'linear-gradient(to bottom right, #0a0c27, #0a2444, #0a3c61, #0a547e)'
 }
 
 export const innerStyles: React.CSSProperties = {
@@ -265,6 +281,15 @@ const inputGroupStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px'
+
+}
+
+const buttonGroupStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '20px'
 

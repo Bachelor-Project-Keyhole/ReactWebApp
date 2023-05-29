@@ -14,6 +14,7 @@ import { AuthServiceProvider } from './src/contexts/Authentication/AuthService'
 import UserService from './src/contexts/Authentication/UserService'
 import { ManageOrganizationProvider } from './src/contexts/ManageOrganization/ManageOrganizationContext'
 import ProtectedRoute from './src/components/ProtectedRoute/ProtectedRoute'
+import Error from './src/screens/Error/Error'
 
 function App (): JSX.Element {
 
@@ -27,6 +28,7 @@ function App (): JSX.Element {
         
                 <Routes>
                      <Route path="/" element={<Home/>}/>
+                     <Route path='/error' element={<Error />} />
                      <Route path="/menu" element={
                       <ProtectedRoute requiredRole='Viewer'>
                         <Menu/>
