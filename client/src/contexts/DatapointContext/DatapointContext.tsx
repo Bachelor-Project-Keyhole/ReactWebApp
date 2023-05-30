@@ -1,15 +1,13 @@
 import { get } from 'lodash'
 import * as React from 'react'
-import axios from 'axios'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
 import UserService from '../Authentication/UserService'
+import instance from '../Authentication/AxiosInterceptorService'
 
 export interface IFormula {
   operation: string
   factor: number
 }
-
-const API_URL = 'https://localhost:7173/api/v1'
 
 export interface IDatapoint {
   id: string
@@ -104,10 +102,9 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
     try {
       console.log('USEr', user.user.id)
 
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: 'https://localhost:7173/api/v1/datapoint/' + user.user.organizationId,
-        headers: authorizationHeader()
+        url: 'datapoint/' + user.user.organizationId
       })
 
       const datapoints = get(response, 'data')
@@ -121,11 +118,10 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
   const getDatapointEntries = React.useCallback(async (
     datapointId: string, period: number, timeUnit: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: API_URL + '/template/' + user.user.organizationId + '/' +
-            datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit + '&displayType=abc',
-        headers: authorizationHeader()
+        url: 'template/' + user.user.organizationId + '/' +
+            datapointId + '?timePeriod=' + period + '&timeUnit=' + timeUnit + '&displayType=abc'
       })
 
       const entries = get(response, 'data')
@@ -138,11 +134,10 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
   const getLatestEntryWithChange = React.useCallback(async (
     datapointId: string, period: number, timeUnit: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: API_URL + '/template/latest-value-with-change/' + datapointId +
-            '?timePeriod=' + period + '&timeUnit=' + timeUnit,
-        headers: authorizationHeader()
+        url: 'template/latest-value-with-change/' + datapointId +
+            '?timePeriod=' + period + '&timeUnit=' + timeUnit
       })
       const entry = get(response, 'data')
       return entry
@@ -153,10 +148,9 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
 
   const patchDatapoint = React.useCallback(async (datapoint: any) => {
     try {
-      const response = await axios.patch(
-        'https://localhost:7173/api/v1/datapoint',
-        datapoint,
-        { headers: authorizationHeader() }
+      const response = await instance.patch(
+        'datapoint',
+        datapoint
       )
       const updatedDatapoint = response.data
       console.log('UPDATED DATAPOINT', updatedDatapoint)
@@ -169,10 +163,9 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
     console.log('POSTING DATAPOINT', datapoint)
 
     try {
-      const response = await axios.post(
-        'https://localhost:7173/api/v1/datapoint',
-        datapoint,
-        { headers: authorizationHeader() }
+      const response = await instance.post(
+        'datapoint',
+        datapoint
       )
       const newDatapoint = response.data
       console.log('NEW DATAPOINT', newDatapoint)

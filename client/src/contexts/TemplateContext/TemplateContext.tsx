@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { type IDatapoint, type IDatapointEntry, type ILatestEntry } from '../DatapointContext/DatapointContext'
-import axios from 'axios'
+import instance from '../Authentication/AxiosInterceptorService'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
 import { get } from 'lodash'
 
-const API_URL = 'https://localhost:7173/api/v1'
 export interface ITemplate {
   datapointId: string
   templateId: string
@@ -76,10 +75,9 @@ export const TemplateContext = React.createContext<ITemplateContext>({
 export const TemplateProvider: React.FC<{ children: any }> = props => {
   const createTemplate = React.useCallback(async (template: ITemplatePost) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'post',
-        url: API_URL + '/template',
-        headers: authorizationHeader(),
+        url: 'template',
         data: template
       })
       const newTemplate = get(response, 'data')
@@ -93,10 +91,9 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
 
   const updateTemplate = React.useCallback(async (template: ITemplatePost) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'put',
-        url: API_URL + '/template',
-        headers: authorizationHeader(),
+        url: 'template',
         data: template
       })
       const updatedTemplate = get(response, 'data')
@@ -110,10 +107,9 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
 
   const deleteTemplate = React.useCallback(async (templateId: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'delete',
-        url: API_URL + '/template/' + templateId,
-        headers: authorizationHeader()
+        url: 'template/' + templateId
       })
       const deletedTemplate = get(response, 'data')
       console.log('DELETE TEMPLATE ENPOINT', deletedTemplate)
