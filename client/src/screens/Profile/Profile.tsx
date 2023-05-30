@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import * as React from 'react'
 import { Navigate } from 'react-router-dom';
-import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 import { IUserResponse } from '../../types/user.type'
 import UserService from '../../contexts/Authentication/UserService'
 import SubHeader from '../../components/SubHeader/SubHeader';
