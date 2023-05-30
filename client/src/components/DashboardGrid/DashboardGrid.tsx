@@ -13,7 +13,6 @@ export interface DashboardGridProps {
   setNewTemplates: any
   newTemplates: any[]
   style?: React.CSSProperties
-  // gridElements?: React.ReactNode[][]
   dashboard: IDashboard
   draggedTemplate: ITemplatePost
   gridElements?: any[][]
@@ -230,10 +229,10 @@ const DashboardGrid = ({
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
   const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
   // const [newTemplates, setNewTemplates] = React.useState<ITemplate[]>([])
-  const { createTemplate, updateTemplate, deleteTemplate } = useTemplateContext()
+  const { createTemplate, updateTemplate, deleteTemplate, getTemplateById } = useTemplateContext()
 
   const handleOnTemplateDelete = React.useCallback(async (templateId: string) => {
-    try{
+    try {
       const tempBlocks = [...blocks]
       const index = tempBlocks.findIndex((block) => block.templateId === templateId)
       tempBlocks.splice(index, 1)
@@ -243,9 +242,7 @@ const DashboardGrid = ({
         placeholders: newDashboard.placeholders.filter((placeholder) => placeholder.templateId !== templateId)
       })
       await deleteTemplate(templateId)
-       
-      }
-    catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
@@ -256,9 +253,6 @@ const DashboardGrid = ({
   }, [dashboard])
 
   React.useEffect(() => {
-    console.log('newDashboard', newDashboard)
-    console.log('dashboard', dashboard)
-
     const tempBlocks = new Array<any>()
     if (newDashboard) {
       newDashboard.placeholders.forEach((placeholder: IDashboardPlaceholder) => {
@@ -278,17 +272,17 @@ const DashboardGrid = ({
             template={
               {
                 templateId: placeholder.templateId,
-                datapoints: [],
-                datapointId: '',
+                datapointEntries: placeholder.values,
+                datapointId: '123',
                 timeSpan: 0,
-                templateType: 'Line',
-                datapointEntries: [],
+                displayType: placeholder.displayType,
                 latestEntry: {
                   latestValue: placeholder.latestValue,
                   change: placeholder.change,
                   comparisonIsAbsolute: placeholder.comparison,
                   directionIsUp: placeholder.isDirectionUp
-                }
+                },
+                displayName: placeholder.displayName
               }
               }
 
@@ -307,7 +301,6 @@ const DashboardGrid = ({
       tempNewTemplates.push(draggedTemplate)
       setNewTemplates(tempNewTemplates)
 
-      // await handleOnTemplateCreate(draggedTemplate)
       const draggedTemplateWithPosition = {
         ...draggedTemplate,
         positionWidth: i,
@@ -341,19 +334,10 @@ const DashboardGrid = ({
               change: 123,
               comparison: true,
               isDirectionUp: true,
-              values: []
-              // datapointId: draggedTemplate.datapointId,
-              // timeSpan: draggedTemplate.timeSpan,
-              // datapointEntries: draggedTemplate.datapointEntries,
-              // datapoints: draggedTemplate.datapoints,
-              // templateType: draggedTemplate.templateType,
-              // latestEntry: {
-              //   latestValue: draggedTemplate.latestEntry.latestValue,
-              //   change: draggedTemplate.latestEntry.change,
-              //   comparisonIsAbsolute: draggedTemplate.latestEntry.comparisonIsAbsolute,
-              //   directionIsUp: draggedTemplate.latestEntry.directionIsUp
-
-            // }
+              values: [],
+              datapointId: draggedTemplate.datapointId,
+              displayName: draggedTemplate.displayName,
+              displayType: draggedTemplate.displayType
             }
           ]
         }
@@ -371,20 +355,18 @@ const DashboardGrid = ({
     // increase the size of the element when enters the drop zone
   }
 
-
   const j = 0
 
   const handleResize = React.useCallback(async (index: number, newWidth: number, newHeight: number) => {
     const placeholder = dashboard.placeholders[index]
-    // const tempTemplate: ITemplatePost = { 
-    //   dashboardId: dashboard.dashboardId,
-    //   datapointId: placeholder.datapointId,
-    //   displayType
-    //   sizeWidth: newWidth,
-    //   sizeHeight: newHeight
+    // try {
+    //   const tempTemplate: ITemplatePost = await getTemplateById(placeholder.templateId)
+    //   tempTemplate.sizeWidth = newWidth
+    //   tempTemplate.sizeHeight = newHeight
+    //   const response = await updateTemplate(tempTemplate)
+    // } catch (err) {
+    //   console.log(err)
     // }
-
-    //const respones = await updateTemplate(tempTemplate)
 
     setBlocks((prevBlocks: any) => {
       const updatedBlocks = [...prevBlocks]

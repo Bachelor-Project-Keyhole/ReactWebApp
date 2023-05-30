@@ -5,6 +5,8 @@ import { type IDatapointEntry, type ILatestEntry } from '../../contexts/Datapoin
 import UpArrowIcon from '../UpArrowIcon/UpArrowIcon'
 import DownArrowIcon from '../DownArrowIcon/DownArrowIcon'
 import Title from '../Title/Title'
+import Description from '../Description'
+import { border } from 'polished'
 
 export interface BarChartComponentProps {
   data: IDatapointEntry[]
@@ -15,23 +17,30 @@ export interface BarChartComponentProps {
 
 export const wrapperStyle: React.CSSProperties = {
   width: 200,
-  height: 200
+  height: 200,
+  border: '1px solid black'
 }
 
 export const barChartStyle: React.CSSProperties = {
-  width: '500',
-  height: '500'
+  width: '60%',
+  height: '60%',
+  marginTop: -8
 }
 
 export const lastEntryStyle: React.CSSProperties = {
   display: 'flex',
-  flexDirection: 'column',
-  placeItems: 'center'
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+  margin: -16,
+  height: '30%'
 }
 
 export const nameStyle: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  lineHeight: 0,
+  height: '10%'
 }
 
 export const directionStyle: React.CSSProperties = {
@@ -44,20 +53,20 @@ const BarChartComponent = ({ data, datapointName, latestEntry, style, ...props }
   return (
         <div style={{ ...wrapperStyle, ...style }}>
             <div style={{ ...nameStyle }}>
-                <SubHeader text={datapointName} />
+                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '90%' }} />
             </div>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="80%" height="60%">
                 <BarChart style={{ ...barChartStyle }} data={data} >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="timeStamp" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
+                    {/* <Legend /> */}
                     <Bar dataKey="value" fill="#82ca9d" />
                 </BarChart>
             </ResponsiveContainer>
             <div style={{ ...lastEntryStyle }} >
-                <Title style={{ margin: '0' }} text={ latestEntry.latestValue.toString() } />
+                <Description style={{ fontSize: '100%', lineHeight: 0 }} text={ latestEntry.latestValue.toString() } />
                 <div style={{ ...directionStyle }} >
                     {latestEntry.directionIsUp && latestEntry.change > 0 &&
                         <UpArrowIcon size={20} color='#03C04A' ></UpArrowIcon>

@@ -3,60 +3,39 @@ import authorizationHeader from '../Authentication/AuthorizationHeader'
 import axios from 'axios'
 import { get, update } from 'lodash'
 import { ITemplatePost } from '../TemplateContext/TemplateContext'
+import { type IDatapointEntry } from '../DatapointContext/DatapointContext'
 
 const API_URL = 'https://localhost:7173/api/v1'
-
-// {
-//   "dashboardId": "string",
-//   "dashboardName": "string",
-//   "placeholders": [
-//     {
-//       "positionHeight": 0,
-//       "positionWidth": 0,
-//       "sizeHeight": 0,
-//       "sizeWidth": 0,
-//       "templateId": "string",
-//       "values": [
-//         {
-//           "value": 0,
-//           "time": "2023-05-26T14:05:48.012Z"
-//         }
-//       ],
-//       "change": 0,
-//       "comparison": true,
-//       "latestValue": 0,
-//       "isDirectionUp": true
-//     }
-//   ]
-// }
-
 export interface IDashboard {
   dashboardId?: string
   dashboardName: string
   placeholders: IDashboardPlaceholder[]
 }
 
-export interface IDashboardPlaceholder/* extends ITemplatePost*/ {
+export interface IDashboardPlaceholder/* extends ITemplatePost */ {
   positionHeight: number
   positionWidth: number
   sizeHeight: number
   sizeWidth: number
   templateId: string
-  values: IDashboardPlaceholderValue[]
+  values: IDatapointEntry[]
   change: number
   comparison: boolean
   latestValue: number
   isDirectionUp: boolean
+  datapointId: string
+  displayName: string
+  displayType: string
   /**/
   // values: IDashboardPlaceholderValue[]
   // change: number
 
 }
 
-export interface IDashboardPlaceholderValue {
-  value: number
-  time: string
-}
+// export interface IDashboardPlaceholderValue {
+//   value: number
+//   time: string
+// }
 
 export const initialDashboard: IDashboard = {
   dashboardId: '',

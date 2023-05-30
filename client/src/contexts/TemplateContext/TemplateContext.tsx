@@ -8,26 +8,28 @@ const API_URL = 'https://localhost:7173/api/v1'
 export interface ITemplate {
   datapointId: string
   templateId: string
-  templateType: string
+  displayType: string
   timeSpan: number
-  datapoints: IDatapoint[]
+  // datapoints: IDatapoint[]
   datapointEntries: IDatapointEntry[]
   latestEntry: ILatestEntry
+  displayName: string
 }
 
 export const initialTemplate: ITemplate = {
   datapointId: '',
   templateId: '',
-  templateType: '',
+  displayType: '',
   timeSpan: 0,
-  datapoints: [],
+  // datapoints: [],
   datapointEntries: [],
   latestEntry: {
     latestValue: 0,
     change: 0,
     directionIsUp: true,
     comparisonIsAbsolute: true
-  }
+  },
+  displayName: ''
 }
 
 // Update to ITemplate
@@ -41,6 +43,7 @@ export interface ITemplatePost {
   positionHeight: number
   sizeWidth: number
   sizeHeight: number
+  displayName: string
 }
 
 export const initialTemplatePost: ITemplatePost = {
@@ -52,19 +55,22 @@ export const initialTemplatePost: ITemplatePost = {
   positionWidth: 0,
   positionHeight: 0,
   sizeWidth: 0,
-  sizeHeight: 0
+  sizeHeight: 0,
+  displayName: ''
 }
 
 export interface ITemplateContext {
-  createTemplate: (template: ITemplatePost) => Promise<ITemplate>
-  updateTemplate: (template: ITemplatePost) => Promise<ITemplate>
+  createTemplate: (template: ITemplatePost) => Promise<ITemplatePost>
+  updateTemplate: (template: ITemplatePost) => Promise<ITemplatePost>
   deleteTemplate: (templateId: string) => Promise<ITemplate>
+  getTemplateById: (templateId: string) => Promise<ITemplatePost>
 }
 
 export const TemplateContext = React.createContext<ITemplateContext>({
-  createTemplate: async (template: ITemplatePost) => initialTemplate,
-  updateTemplate: async (template: ITemplatePost) => initialTemplate,
-  deleteTemplate: async (templateId: string) => initialTemplate
+  createTemplate: async (template: ITemplatePost) => initialTemplatePost,
+  updateTemplate: async (template: ITemplatePost) => initialTemplatePost,
+  deleteTemplate: async (templateId: string) => initialTemplate,
+  getTemplateById: async (templateId: string) => initialTemplatePost
 })
 
 export const TemplateProvider: React.FC<{ children: any }> = props => {
@@ -102,7 +108,6 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
     }
   }, [])
 
-
   const deleteTemplate = React.useCallback(async (templateId: string) => {
     try {
       const response = await axios({
@@ -119,12 +124,26 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
     }
   }, [])
 
+  const getTemplateById = React.useCallback(async (templateId: string) => {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: API_URL + '/template/' + templateId,
+        headers: authorizationHeader()
+      })
+      const template = get(response, 'data')
+      return template
+    } catch (error) {
+      console.log('error', error)
+    }
+  }, [])
 
   return (
     <TemplateContext.Provider value={{
       createTemplate,
       updateTemplate,
-      deleteTemplate
+      deleteTemplate,
+      getTemplateById
     }}>
       {props.children}
     </TemplateContext.Provider>

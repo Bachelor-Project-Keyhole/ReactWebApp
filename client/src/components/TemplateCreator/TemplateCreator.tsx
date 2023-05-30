@@ -5,7 +5,7 @@ import LineChartComponent from '../LineChart/LineChartComponent'
 import BarChartComponent from '../BarChart/BarChartComponent'
 import { useDatapointContext, type IDatapoint, type IDatapointEntry, type ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
 import { type ITemplatePost, type ITemplate } from '../../contexts/TemplateContext/TemplateContext'
-import { random } from 'lodash'
+import { get, random } from 'lodash'
 
 interface TemplateCreatorProps {
   handleOnDragStart: (event: React.DragEvent<HTMLDivElement>, template: ITemplatePost) => void
@@ -49,6 +49,7 @@ const previewStyles: React.CSSProperties = {
 }
 
 const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateCreatorProps): JSX.Element => {
+  const [displayName, setDisplayName] = React.useState('' as string)
   const [template, setTemplate] = React.useState<'BarChart' | 'LineChart' | 'Numeric'>('Numeric')
   const [timespan, setTimespan] = React.useState(0)
   const [datapoints, setDatapoints] = React.useState<IDatapoint[]>([])
@@ -119,9 +120,11 @@ const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateC
                 <select style={{ ...selectStyle }}
                     onChange={ e => { setDatapointId(e.currentTarget.value) }} >
                     <option key={0} value={0} hidden={true}></option>
-                    {datapoints.map(
-                      (datapoint) => <option key={datapoint.id}
-                            value={datapoint.id} >{datapoint.displayName}</option>)}
+                    {datapoints
+                      ? datapoints.map(
+                        (datapoint) => <option key={datapoint.id}
+                            value={datapoint.id} >{datapoint.displayName}</option>)
+                      : 'no data'}
                 </select>
             </div>
             <div>
@@ -168,7 +171,7 @@ const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateC
                 draggable
                 onDragStart={(e) => {
                   handleOnDragStart(e, {
-                    // templateId: Math.floor(Math.random() * 1000).toString(),
+                    // templateId`: M`ath.floor(Math.random() * 1000).toString(),
                     dashboardId,
                     datapointId,
                     displayType: template,
@@ -178,7 +181,8 @@ const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateC
                     positionWidth: 0,
                     positionHeight: 0,
                     sizeWidth: 1,
-                    sizeHeight: 1
+                    sizeHeight: 1,
+                    displayName: getDatapointName()
                     // datapoints,
                     // datapointEntries,
                     // latestEntry

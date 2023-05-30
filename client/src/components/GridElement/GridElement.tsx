@@ -14,23 +14,25 @@ export interface GridElementProps {
 }
 
 const GridElement = ({ onClose, text = 'grid element', template, style }: GridElementProps): JSX.Element => {
+  console.log('templateGRIDELEMENT', template)
+
   return (
         <div style={{ ...wrapperStyles, ...style }}>
           <Button onClick={onClose} text={'X'} style={{ zIndex: 10, position: 'absolute', top: 0, right: 0 }} />
-            {template?.templateType === 'Line' &&
+            {template?.displayType === 'LineChart' &&
                 <LineChartComponent
                   style={{ ...LineChartStyle }}
-                  data={template.datapoints}
+                  data={template.datapointEntries}
                   latestEntry={{
                     latestValue: template.latestEntry.latestValue,
                     change: template.latestEntry.change,
                     directionIsUp: template.latestEntry.directionIsUp,
                     comparisonIsAbsolute: template.latestEntry.comparisonIsAbsolute
                   }}
-                  datapointName={'asd'}
+                  datapointName={template.displayName}
                   />
             }
-            {template?.templateType === 'Bar' &&
+            {template?.displayType === 'BarChart' &&
                 <BarChartComponent
                   style={{ width: '100%', height: '100%' }}
                   data={template.datapointEntries}
@@ -40,9 +42,9 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
                     directionIsUp: template.latestEntry.directionIsUp,
                     comparisonIsAbsolute: template.latestEntry.comparisonIsAbsolute
                   }}
-                  datapointName={'dsa'} />
+                  datapointName={template.displayName} />
             }
-            {template?.templateType === 'Numeric' &&
+            {template?.displayType === 'Numeric' &&
               <Title text={template.latestEntry.latestValue.toString()} />
             }
         </div>
