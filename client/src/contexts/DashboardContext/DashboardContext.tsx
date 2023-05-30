@@ -1,11 +1,10 @@
 import * as React from 'react'
 import authorizationHeader from '../Authentication/AuthorizationHeader'
-import axios from 'axios'
 import { get, update } from 'lodash'
 import { ITemplatePost } from '../TemplateContext/TemplateContext'
 import { type IDatapointEntry } from '../DatapointContext/DatapointContext'
+import instance from '../Authentication/AxiosInterceptorService'
 
-const API_URL = 'https://localhost:7173/api/v1'
 export interface IDashboard {
   dashboardId?: string
   dashboardName: string
@@ -60,10 +59,9 @@ export const DashboardContext = React.createContext<IDashboardContext>({
 export const DashboardProvider: React.FC<{ children: any }> = props => {
   const getDashboards = React.useCallback(async (organizationId: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: API_URL + '/dashboard/all/' + organizationId,
-        headers: authorizationHeader()
+        url: 'dashboard/all/' + organizationId
       })
       const dashboards = get(response, 'data')
       console.log('GET DASHBOARDS', dashboards)
@@ -75,10 +73,9 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
 
   const newDashboard = React.useCallback(async (dashboardName: string, organizationId: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'post',
-        url: API_URL + '/dashboard',
-        headers: authorizationHeader(),
+        url: 'dashboard',
         data: { dashboardName, organizationId }
       })
       const newDashboard = get(response, 'data')
@@ -91,10 +88,9 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
 
   const loadDashboard = React.useCallback(async (dashboardId: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: API_URL + '/dashboard/load/' + dashboardId,
-        headers: authorizationHeader()
+        url: 'dashboard/load/' + dashboardId
       })
       const dashboard = get(response, 'data')
       console.log('GET DASHBOARD', dashboard)
@@ -108,10 +104,9 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
     try {
       console.log('UPDATE DASHBOARD', dashboardName, dashboardId)
 
-      const response = await axios({
+      const response = await instance({
         method: 'put',
-        url: API_URL + '/dashboard',
-        headers: authorizationHeader(),
+        url: 'dashboard',
         data: { dashboardName, dashboardId }
       })
       const newDashboard = get(response, 'data')
