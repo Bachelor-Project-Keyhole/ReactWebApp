@@ -122,9 +122,9 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
 
   const getTemplateById = React.useCallback(async (templateId: string) => {
     try {
-      const response = await axios({
+      const response = await instance({
         method: 'get',
-        url: API_URL + '/template/' + templateId,
+        url: 'template/' + templateId,
         headers: authorizationHeader()
       })
       const template = get(response, 'data')
