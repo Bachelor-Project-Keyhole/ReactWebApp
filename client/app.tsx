@@ -52,6 +52,8 @@ function App (): JSX.Element {
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register isNewCompany={true} />} />
                       <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
+                      <Route path='/password-reset-email' element={<PasswordResetEmail />} />
+                      <Route path='/password-reset/:token' element={<PasswordReset />} /> 
                       <Route path='/profile' element={
                         <ProtectedRoute requiredRole='Viewer'>
                           <Profile />
