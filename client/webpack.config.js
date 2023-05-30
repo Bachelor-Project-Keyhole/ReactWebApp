@@ -1,8 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const ASSET_PATH = process.env.ASSET_PATH || '/';
-
 module.exports = {
   mode: 'development',
   entry: './main.tsx',
@@ -10,7 +8,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'bundle.js',
-    publicPath: ASSET_PATH
+    publicPath: '/'
   },
   devServer: {
     static: './dist',
