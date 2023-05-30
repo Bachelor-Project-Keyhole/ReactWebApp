@@ -1,13 +1,14 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 module.exports = {
   mode: 'development',
   entry: './main.tsx',
   devtool: 'inline-source-map',
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'bundle.js'
-    // publicPath: '/'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   devServer: {
     static: './dist',

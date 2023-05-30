@@ -10,22 +10,11 @@ import Title from '../Title'
 
 export interface LoginProps {}
 
-type State = {
-  redirect: string | null;
-  email: string;
-  password: string;
-  loading: boolean;
-  message: string;
-  inputBorder: string;
-}
-
 const Login = ({ ...props }: LoginProps): any => {
   const [redirect, setRedirect] = useState<string | null>(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [redirectPasswordReset, setRedirectPasswordReset] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [inputBorder, setInputBorder] = useState('')
   const { login } = useAuthServiceContext()
 
   useEffect(() => {
@@ -67,7 +56,7 @@ const Login = ({ ...props }: LoginProps): any => {
         const resMessage =
           (error.response &&
             error.response.data &&
-            error.response.data.message) ||
+            error.response.data.errorMessage) ||
           error.message ||
           error.toString()
 
@@ -78,6 +67,10 @@ const Login = ({ ...props }: LoginProps): any => {
 
   if (redirect) {
     return <Navigate to={redirect} />
+  }
+
+  if (redirectPasswordReset) {
+    return <Navigate to={redirectPasswordReset} />
   }
 
   const initialValues = {
@@ -117,6 +110,10 @@ const Login = ({ ...props }: LoginProps): any => {
             {message && <div style={errorMessageStyle}>{message}</div>}
           </Form>
         </Formik>
+        <div>
+          <a onClick={() => setRedirectPasswordReset('/password-reset-email')}
+            style={{ color: 'blue'}} >Forgot password?</a>
+        </div>
       </div>
     </div>
   )
@@ -171,6 +168,7 @@ const buttonStyle: React.CSSProperties = {
   backgroundColor: '#0275d8',
   border: '2px solid #0275d8',
   color: 'white',
+  width: '30%'
 }
 
 export default Login

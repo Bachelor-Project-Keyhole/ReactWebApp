@@ -1,8 +1,14 @@
 import axios from 'axios'
 import TokenService from './TokenService'
 
+const environment = process.env.NODE_ENV //If environemnt production then one link if development another link 
+
+const baseURL = environment === 'production'
+  ? 'https://dashboards-server.azurewebsites.net/api/v1/'
+  : 'https://localhost:7173/api/v1/'
+
 const instance = axios.create({
-    baseURL: 'https://localhost:7173/api/v1/',
+    baseURL: baseURL,
     headers: { 'Content-Type': 'application/json'}
 })
 
