@@ -1,6 +1,5 @@
 import { get } from 'lodash'
 import * as React from 'react'
-import authorizationHeader from '../Authentication/AuthorizationHeader'
 import UserService from '../Authentication/UserService'
 import instance from '../Authentication/AxiosInterceptorService'
 
@@ -108,7 +107,7 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
     } catch (error) {
       console.log('error', error)
     }
-  }, [user])
+  }, [])
 
   const getDatapointEntries = React.useCallback(async (
     datapointId: string, period: number, timeUnit: string) => {

@@ -6,6 +6,7 @@ import { type ITemplatePost, initialTemplatePost } from '../../contexts/Template
 import { useDashboardContext, initialDashboard } from '../../contexts/DashboardContext/DashboardContext'
 import { Field, Form, Formik, type FormikHelpers, type FormikValues } from 'formik'
 import { useParams, useNavigate } from 'react-router-dom'
+import ProtectedComponent from '../../components/ProtectedComponent/ProtectedComponent'
 
 export interface ManageDashboardProps {
   style?: React.CSSProperties
@@ -70,7 +71,9 @@ const ManageDashboard = ({ style }: ManageDashboardProps): JSX.Element => {
                 />
                 <div style={{ padding: 8 }}>
                   <div>
+                  <ProtectedComponent requiredRole='Editor' >
                    <TemplateCreator dashboardId={dashboardId || ' '} handleOnDragStart={handleOnDragStart}/>
+                  </ProtectedComponent>
                   </div>
                 </div>
 

@@ -1,7 +1,5 @@
 import * as React from 'react'
 import { get } from 'lodash'
-import axios from 'axios'
-import authorizationHeader from '../Authentication/AuthorizationHeader'
 import instance from '../Authentication/AxiosInterceptorService'
 
 export interface IOrganization {

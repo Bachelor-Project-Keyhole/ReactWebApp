@@ -46,7 +46,7 @@ const Menu = (): JSX.Element => {
         `New Dashboard ${dashboards.length + 1}`,
         organizationId
       )
-      navigate('/manage-dashboard')
+      navigate('/manage-dashboard/' + dashboard.id)
     } catch (error) {
       console.log('error', error)
     }

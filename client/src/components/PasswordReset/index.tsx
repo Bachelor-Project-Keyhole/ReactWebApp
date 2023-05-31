@@ -1,1 +1,1 @@
-export { default } from './PasswordResetEmail'
+export { default } from './PasswordReset'

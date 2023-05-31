@@ -6,7 +6,6 @@ import PlusIcon from '../../components/PlusIcon'
 import SubHeader from '../../components/SubHeader'
 import Title from '../../components/Title'
 import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
-import authorizationHeader from '../../contexts/Authentication/AuthorizationHeader'
 import { IDatapointEntry, ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
 import Logo from '../../components/Logo/Logo'
 
@@ -15,8 +14,6 @@ const Home = ({ ...props }: any): any => {
   // const [temp, setTemp] = React.useState(0)
 
   console.log('HI')
-
-  const user = authorizationHeader
 
   const handleTemperature = React.useCallback(async () => {
     console.log('HANDLETEMP')

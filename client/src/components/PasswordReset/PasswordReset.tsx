@@ -5,18 +5,30 @@ import * as Yup from 'yup'
 import Title from '../Title/Title'
 import { useAuthServiceContext } from '../../contexts/Authentication/AuthService'
 import Button from '../Button/Button'
+import { useParams } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 
-export interface PasswordResetEmailProps {}
+export interface PasswordResetProps {}
 
-const PasswordResetEmail = ({}: PasswordResetEmailProps) => {
-    const [successMessage, setSuccessMessage] = useState<string | null>(null)
-    const { requestPasswordReset } = useAuthServiceContext()
+const PasswordReset = ({}: PasswordResetProps) => {
+    const token = useParams()
+    const [redirect, setRedirect] = useState<string | null>(null)
+    const { resetPassword } = useAuthServiceContext()
     const [message, setMessage] = useState('')
 
     const validationSchema = () => {
         return Yup.object().shape({
-            email: Yup.string().required('This field is required!')
+            password: Yup.string()
+              .test(
+                'len',
+                'The password must be between 6 and 40 characters.',
+                (val: any) =>
+                  val && val.toString().length >= 6 && val.toString().length <= 40
+              )
+              .required('This field is required!'),
+            passwordRepeat: Yup.string()
+              .oneOf([Yup.ref('password'), ''], 'Passwords do not match!')
+              .required('Repeat Password is required!'),
         })
     }
 
@@ -29,43 +41,56 @@ const PasswordResetEmail = ({}: PasswordResetEmailProps) => {
     }
 
     const initialValues = {
-        email: ''
+        password: '',
+        passwordRepeat: ''
     }
 
-    const handleRequestPasswordReset = React.useCallback(
-        async (formValue: {email: string}) => {
-            requestPasswordReset(formValue.email).then(() => {
-                setSuccessMessage('Please check your mailbox!')
+    const handleResetPassword = React.useCallback(async (
+        formValue: {password: string, passwordRepeat: string}) => {
+            if(token.token)
+            resetPassword(formValue.password, token.token).then(() => {
+                setRedirect('/login')
             }).catch((error) => {
                 const resMessage = (error.response &&
                     error.response.data &&
-                    error.response.data.message) ||
+                    error.response.data.errorMessage) ||
                     error.message || error.toString()
                 setMessage(resMessage)
             })
-    }, []) 
+    }, [])
+
+    if(redirect) {
+        return <Navigate to={redirect} />
+    }
 
     return (
         <div style={{ ...mainDivStyle }}>
             <div style={{ ...componentStyles }}>
-                <Title text='Password reset' />
+                <Title text='New password' />
                 <Formik initialValues={ initialValues }
                     validationSchema={ validationSchema() }
-                    onSubmit={ handleRequestPasswordReset } >
+                    onSubmit={ handleResetPassword} >
                         <Form>
-                            <div style={{ ...inputGroupStyle }} >
-                                <label htmlFor="email">E-mail</label>
-                                <Field name="email" type="email" style={{ ...inputStyle }}
-                                    onFocus={ handleFocus } onBlur={ handleBlur } />
-                                <div style={ errorMessageStyle }>
-                                    <ErrorMessage name="email" />
+                            <div style={{ ...inputGroupStyle }}>
+                                <label htmlFor="password">Password</label>
+                                <Field name="password" type="password" style={{ ...inputStyle }}
+                                    onFocus={ handleFocus } onBlur={ handleBlur }  />
+                                <div style={{ ...errorMessageStyle }}>
+                                    <ErrorMessage name="password" />
                                 </div>
                             </div>
-                            <div style={{ ...inputGroupStyle }} >
-                                <Button type="submit" text="Send" style={{ ...buttonStyle }} />
+                            <div style={{ ...inputGroupStyle }}>
+                                <label htmlFor="passwordRepeat">Repeat password</label>
+                                <Field name="passwordRepeat" type="password" style={{ ...inputStyle }}
+                                    onFocus={ handleFocus } onBlur={ handleBlur }  />
+                                <div style={{ ...errorMessageStyle }}>
+                                    <ErrorMessage name="passwordRepeat" />
+                                </div>
                             </div>
-                            {message && <div style={{ ...errorMessageStyle }}>{message}</div>}
-                            {successMessage && <div style={{ ...successMessageStyle }}>{successMessage}</div>}
+                            <div style={inputGroupStyle}>
+                                <Button type="submit" text="Reset" style={buttonStyle} />
+                            </div>
+                            {message && <div style={errorMessageStyle}>{message}</div>}
                         </Form>
                 </Formik>
             </div>
@@ -117,13 +142,6 @@ const errorMessageStyle: React.CSSProperties = {
     borderColor: '#f5c6cb',
 }
 
-const successMessageStyle: React.CSSProperties = {
-    color: '#155724',
-    backgroundColor: '#d4edda',
-    borderRadius: 25,
-    borderColor: '#c3e6cb'
-}
-
 const buttonStyle: React.CSSProperties = {
     borderRadius: 5,
     backgroundColor: '#0275d8',
@@ -132,4 +150,4 @@ const buttonStyle: React.CSSProperties = {
     width: '30%'
 }
 
-export default PasswordResetEmail
+export default PasswordReset
