@@ -6,7 +6,7 @@ import PlusIcon from '../../components/PlusIcon'
 import SubHeader from '../../components/SubHeader'
 import Title from '../../components/Title'
 import { useWeatherContext } from '../../contexts/WeatherContext/WeatherContext'
-import { IDatapointEntry, ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
+import { IDatapointEntry, type ILatestEntry } from '../../contexts/DatapointContext/DatapointContext'
 import Logo from '../../components/Logo/Logo'
 
 const Home = ({ ...props }: any): any => {
@@ -32,7 +32,7 @@ const Home = ({ ...props }: any): any => {
 
   return (
     <div style={{ ...mainDivStyle }}>
-      <div style={{ marginTop: '5%'}}>
+      <div style={{ marginTop: '5%' }}>
         <Logo />
       </div>
     </div>
@@ -42,8 +42,8 @@ const Home = ({ ...props }: any): any => {
 const entry: ILatestEntry = {
   latestValue: 3,
   change: 12,
-  directionIsUp: false,
-  comparisonIsAbsolute: false
+  isDirectionUp: false,
+  isComparisonAbsolute: false
 }
 
 export const containerStyle: React.CSSProperties = {
@@ -53,7 +53,7 @@ export const containerStyle: React.CSSProperties = {
 }
 
 export const componentStyle: React.CSSProperties = {
-  
+
 }
 
 const mainDivStyle: React.CSSProperties = {

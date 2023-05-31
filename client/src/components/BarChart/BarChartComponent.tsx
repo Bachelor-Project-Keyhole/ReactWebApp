@@ -68,22 +68,22 @@ const BarChartComponent = ({ data, datapointName, latestEntry, style, ...props }
             <div style={{ ...lastEntryStyle }} >
                 <Description style={{ fontSize: '100%', lineHeight: 0 }} text={ latestEntry.latestValue.toString() } />
                 <div style={{ ...directionStyle }} >
-                    {latestEntry.directionIsUp && latestEntry.change > 0 &&
+                    {latestEntry.isDirectionUp && latestEntry.change > 0 &&
                         <UpArrowIcon size={20} color='#03C04A' ></UpArrowIcon>
                     }
-                    {latestEntry.directionIsUp && latestEntry.change < 0 &&
+                    {latestEntry.isDirectionUp && latestEntry.change < 0 &&
                         <DownArrowIcon size={20} color='#FF0000' ></DownArrowIcon>
                     }
-                    {!latestEntry.directionIsUp && latestEntry.change < 0 &&
+                    {!latestEntry.isDirectionUp && latestEntry.change < 0 &&
                         <DownArrowIcon size={20} color='#03C04A' ></DownArrowIcon>
                     }
-                    {!latestEntry.directionIsUp && latestEntry.change > 0 &&
+                    {!latestEntry.isDirectionUp && latestEntry.change > 0 &&
                         <DownArrowIcon size={20} color='#FF0000' ></DownArrowIcon>
                     }
-                    { latestEntry.comparisonIsAbsolute &&
+                    { latestEntry.isComparisonAbsolute &&
                         <p>{latestEntry.change}</p>
                     }
-                    { !latestEntry.comparisonIsAbsolute &&
+                    { !latestEntry.isComparisonAbsolute &&
                         <p>{latestEntry.change} %</p>
                     }
                 </div>

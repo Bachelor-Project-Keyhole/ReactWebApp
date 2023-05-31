@@ -18,7 +18,7 @@ export interface IDashboardPlaceholder/* extends ITemplatePost */ {
   templateId: string
   values: IDatapointEntry[]
   change: number
-  comparison: boolean
+  isComparisonAbsolute: boolean
   latestValue: number
   isDirectionUp: boolean
   datapointId: string

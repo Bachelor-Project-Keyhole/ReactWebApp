@@ -276,8 +276,8 @@ const DashboardGrid = ({
                 latestEntry: {
                   latestValue: placeholder.latestValue,
                   change: placeholder.change,
-                  comparisonIsAbsolute: placeholder.comparison,
-                  directionIsUp: placeholder.isDirectionUp
+                  isComparisonAbsolute: placeholder.isComparisonAbsolute,
+                  isDirectionUp: placeholder.isDirectionUp
                 },
                 displayName: placeholder.displayName
               }
@@ -325,7 +325,7 @@ const DashboardGrid = ({
               templateId: '123',
               latestValue: 123,
               change: 123,
-              comparison: true,
+              isComparisonAbsolute: true,
               isDirectionUp: true,
               values: [],
               datapointId: draggedTemplate.datapointId,
