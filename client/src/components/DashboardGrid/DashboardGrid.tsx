@@ -1,9 +1,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import GridElement from '../GridElement/GridElement'
-import { padding } from 'polished'
 import ResizableBlock from '../ResizableBlock/ResizableBlock'
-import { set } from 'lodash'
 import Block from '../Block'
 import { type BlockProps } from '../Block/Block'
 import { useTemplateContext, type ITemplate, type ITemplatePost } from '../../contexts/TemplateContext/TemplateContext'
@@ -228,8 +226,7 @@ const DashboardGrid = ({
   const [newDashboard, setNewDashboard] = React.useState<IDashboard>(dashboard)
   const [newGridElements, setNewGridElements] = React.useState(gridElements)
   const [blocks, setBlocks] = useState<BlockProps[]>([]) // { x: 0, y: 0, width: 1, height: 1 }, { x: 2, y: 2, width: 2, height: 2 }
-  // const [newTemplates, setNewTemplates] = React.useState<ITemplate[]>([])
-  const { createTemplate, updateTemplate, deleteTemplate, getTemplateById } = useTemplateContext()
+  const { createTemplate, deleteTemplate } = useTemplateContext()
 
   const handleOnTemplateDelete = React.useCallback(async (templateId: string) => {
     try {
@@ -295,8 +292,6 @@ const DashboardGrid = ({
 
   const handleOnDrop = React.useCallback(async (e: any, i: number, j: number) => {
     try {
-      // console.log('BLOCK', draggedTemplate.templateId)
-      // const tempArray = [...newGridElements]
       const tempNewTemplates = [...newTemplates]
       tempNewTemplates.push(draggedTemplate)
       setNewTemplates(tempNewTemplates)
@@ -306,9 +301,7 @@ const DashboardGrid = ({
         positionWidth: i,
         positionHeight: j
       }
-      console.log('DraggedTemplateyy', draggedTemplateWithPosition)
       const response = await createTemplate(draggedTemplateWithPosition)
-      console.log('TEMPLATEUPDATERESOPNSE', response)
       const tempBlocks = [...blocks]
       tempBlocks.push({
         x: i,

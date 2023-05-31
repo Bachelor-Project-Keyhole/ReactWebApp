@@ -171,11 +171,9 @@ const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateC
                 draggable
                 onDragStart={(e) => {
                   handleOnDragStart(e, {
-                    // templateId`: M`ath.floor(Math.random() * 1000).toString(),
                     dashboardId,
                     datapointId,
                     displayType: template,
-                    // timeSpan: timespan,
                     timeUnit,
                     timePeriod: timespan,
                     positionWidth: 0,
@@ -183,10 +181,6 @@ const TemplateCreator = ({ dashboardId, handleOnDragStart, ...props }: TemplateC
                     sizeWidth: 1,
                     sizeHeight: 1,
                     displayName: getDatapointName()
-                    // datapoints,
-                    // datapointEntries,
-                    // latestEntry
-                    // latestEntry
                   })
                 }}
                 onMouseEnter={handleMouseEnter}

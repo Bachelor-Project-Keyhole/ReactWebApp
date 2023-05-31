@@ -22,7 +22,6 @@ import PasswordReset from './src/components/PasswordResetEmail/PasswordReset'
 import PasswordResetEmail from './src/components/PasswordReset/PasswordResetEmail'
 
 function App (): JSX.Element {
-
   return (
     <WeatherProvider>
       <TemplateProvider>
@@ -31,8 +30,6 @@ function App (): JSX.Element {
               <ManageOrganizationProvider>
                 <AuthServiceProvider>
                   <Navbar />
-            {/* Rest of your application */}
-          
                   <Routes>
                       <Route path="/" element={<Home/>}/>
                       <Route path='/error' element={<Error />} />
@@ -53,7 +50,7 @@ function App (): JSX.Element {
                       <Route path="/register" element={<Register isNewCompany={true} />} />
                       <Route path="/registerUser/:token" element={<Register isNewCompany={false} />} />
                       <Route path='/password-reset-email' element={<PasswordResetEmail />} />
-                      <Route path='/password-reset/:token' element={<PasswordReset />} /> 
+                      <Route path='/password-reset/:token' element={<PasswordReset />} />
                       <Route path='/profile' element={
                         <ProtectedRoute requiredRole='Viewer'>
                           <Profile />

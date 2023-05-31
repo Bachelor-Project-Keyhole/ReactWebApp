@@ -20,6 +20,8 @@ const schema = Yup.object().shape({
   comparison: Yup.bool().required()
 })
 
+
+
 export interface ManageDatapointsProps {
   style?: React.CSSProperties
 }
@@ -62,7 +64,6 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
   }, [initializeForm, setEditModal])
 
   const onFormSubmit = async (values: any): Promise<any> => {
-    console.log('VALUES', values)
     const datapoint = {
       id: values.id,
       organizationId: values.organizationId,
@@ -75,13 +76,11 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
         factor: toInteger(values.factor)
       }
     }
-    console.log('DATOPOINT', datapoint)
     if (submitAction === 'save') {
       try {
         setEditModal(false)
         const response = await patchDatapoint(datapoint)
         handleGetDatapoints()
-        console.log('RESPONSE', response)
       } catch (error) {
         console.log('error', error)
       }
@@ -90,7 +89,6 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
         setEditModal(false)
         const response = await postDatapoint(datapoint)
         handleGetDatapoints()
-        console.log('RESPONSE', response)
       } catch (error) {
         console.log('error', error)
       }
@@ -107,7 +105,6 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
 
   React.useLayoutEffect(() => {
     handleGetDatapoints()
-    console.log('DATAPOINTS: ' + datapoints.toString())
   }, [handleGetDatapoints])
 
   return (
@@ -161,7 +158,7 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                       <Description text='Up is positive' style={{ margin: 0 }} />
                       <Field name="directionIsUp" type="radio" value='false'/>
                       <Description text='Down is positive' style={{ margin: 0 }} />
-                      <Description text={values.directionIsUp} style={{ margin: 0 }} />
+
                     </div>
                     <ErrorMessage name="direction" />
                   </div>
@@ -193,7 +190,7 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                     </div>
                     <Divider />
                     <Field name="factor" placeholder={values.factor}
-                      style={{ ...inputStyle }}  onFocus={ handleFocus } onBlur={ handleBlur }  />
+                      style={{ ...inputStyle }} onFocus={ handleFocus } onBlur={ handleBlur } />
                   </div>
                   <Divider size={2} />
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
@@ -250,7 +247,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #D3D3D3',
   height: '2vh',
   width: '20vh',
-  marginRight: '3vh',
+  marginRight: '3vh'
 }
 
 export const primaryButtonStyle: React.CSSProperties = {

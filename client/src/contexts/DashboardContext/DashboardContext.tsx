@@ -1,5 +1,4 @@
 import * as React from 'react'
-import authorizationHeader from '../Authentication/AuthorizationHeader'
 import { get, update } from 'lodash'
 import { ITemplatePost } from '../TemplateContext/TemplateContext'
 import { type IDatapointEntry } from '../DatapointContext/DatapointContext'
@@ -93,7 +92,6 @@ export const DashboardProvider: React.FC<{ children: any }> = props => {
         url: 'dashboard/load/' + dashboardId
       })
       const dashboard = get(response, 'data')
-      console.log('GET DASHBOARD', dashboard)
       return dashboard
     } catch (error) {
       console.log('error', error)

@@ -12,7 +12,6 @@ export interface IFormula {
 export interface IDatapoint {
   id: string
   organizationId: number
-  // will be renamed
   dataPointKey: string
   displayName: string
   directionIsUp: boolean
@@ -38,7 +37,6 @@ export const initialDatapoint: IDatapoint = {
 export interface IDatapointForm {
   id: string
   organizationId: number
-  // will be renamed
   dataPointKey: string
   displayName: string
   directionIsUp: string
@@ -100,15 +98,12 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
 
   const getDatapoints = React.useCallback(async () => {
     try {
-      console.log('USEr', user.user.id)
-
       const response = await instance({
         method: 'get',
         url: 'datapoint/' + user.user.organizationId
       })
 
       const datapoints = get(response, 'data')
-      console.log('GET DATAPOINTS', datapoints)
       return datapoints
     } catch (error) {
       console.log('error', error)
@@ -175,7 +170,14 @@ export const DatapointProvider: React.FC<{ children: any }> = props => {
   }, [])
 
   return (
-        <DatapointContext.Provider value={{ datapoints: [], getDatapoints, patchDatapoint, postDatapoint, getDatapointEntries, getLatestEntryWithChange }}>
+        <DatapointContext.Provider value={{
+          datapoints: [],
+          getDatapoints,
+          patchDatapoint,
+          postDatapoint,
+          getDatapointEntries,
+          getLatestEntryWithChange
+        }}>
             {props.children}
         </DatapointContext.Provider>
   )
