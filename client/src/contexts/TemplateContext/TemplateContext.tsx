@@ -24,8 +24,8 @@ export const initialTemplate: ITemplate = {
   latestEntry: {
     latestValue: 0,
     change: 0,
-    directionIsUp: true,
-    comparisonIsAbsolute: true
+    isDirectionUp: true,
+    isComparisonAbsolute: true
   },
   displayName: ''
 }

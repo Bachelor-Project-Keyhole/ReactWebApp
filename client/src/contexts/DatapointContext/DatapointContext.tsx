@@ -13,8 +13,8 @@ export interface IDatapoint {
   organizationId: number
   dataPointKey: string
   displayName: string
-  directionIsUp: boolean
-  comparisonIsAbsolute: boolean
+  isDirectionUp: boolean
+  isComparisonAbsolute: boolean
   latestValue: number
   formula: IFormula
 }
@@ -24,8 +24,8 @@ export const initialDatapoint: IDatapoint = {
   organizationId: 0,
   dataPointKey: '',
   displayName: '',
-  directionIsUp: false,
-  comparisonIsAbsolute: false,
+  isDirectionUp: false,
+  isComparisonAbsolute: false,
   latestValue: 0,
   formula: {
     operation: 'None',
@@ -38,8 +38,8 @@ export interface IDatapointForm {
   organizationId: number
   dataPointKey: string
   displayName: string
-  directionIsUp: string
-  comparisonIsAbsolute: string
+  isDirectionUp: string
+  isComparisonAbsolute: string
   latestValue: number
   operation: string
   factor: number
@@ -50,8 +50,8 @@ export const initialDatapointForm: IDatapointForm = {
   organizationId: 0,
   dataPointKey: '',
   displayName: '',
-  directionIsUp: 'false',
-  comparisonIsAbsolute: 'false',
+  isDirectionUp: 'false',
+  isComparisonAbsolute: 'false',
   latestValue: 0,
   operation: 'None',
   factor: 0
@@ -65,8 +65,8 @@ export interface IDatapointEntry {
 export interface ILatestEntry {
   latestValue: number
   change: number
-  directionIsUp: boolean
-  comparisonIsAbsolute: boolean
+  isDirectionUp: boolean
+  isComparisonAbsolute: boolean
 }
 
 export interface IDatapointContext {

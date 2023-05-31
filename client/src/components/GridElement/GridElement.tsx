@@ -26,8 +26,8 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
                   latestEntry={{
                     latestValue: template.latestEntry.latestValue,
                     change: template.latestEntry.change,
-                    directionIsUp: template.latestEntry.directionIsUp,
-                    comparisonIsAbsolute: template.latestEntry.comparisonIsAbsolute
+                    isDirectionUp: template.latestEntry.isDirectionUp,
+                    isComparisonAbsolute: template.latestEntry.isComparisonAbsolute
                   }}
                   datapointName={template.displayName}
                   />
@@ -39,8 +39,8 @@ const GridElement = ({ onClose, text = 'grid element', template, style }: GridEl
                   latestEntry={{
                     latestValue: template.latestEntry.latestValue,
                     change: template.latestEntry.change,
-                    directionIsUp: template.latestEntry.directionIsUp,
-                    comparisonIsAbsolute: template.latestEntry.comparisonIsAbsolute
+                    isDirectionUp: template.latestEntry.isDirectionUp,
+                    isComparisonAbsolute: template.latestEntry.isComparisonAbsolute
                   }}
                   datapointName={template.displayName} />
             }

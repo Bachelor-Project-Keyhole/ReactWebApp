@@ -20,8 +20,6 @@ const schema = Yup.object().shape({
   comparison: Yup.bool().required()
 })
 
-
-
 export interface ManageDatapointsProps {
   style?: React.CSSProperties
 }
@@ -47,8 +45,8 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
   const initializeForm = React.useCallback((index: number): void => {
     setInitialValues({
       displayName: datapoints[index].displayName || datapoints[index].dataPointKey,
-      directionIsUp: String(datapoints[index].directionIsUp),
-      comparisonIsAbsolute: String(datapoints[index].comparisonIsAbsolute),
+      isDirectionUp: String(datapoints[index].isDirectionUp),
+      isComparisonAbsolute: String(datapoints[index].isComparisonAbsolute),
       dataPointKey: datapoints[index].dataPointKey,
       id: datapoints[index].id,
       organizationId: datapoints[index].organizationId,
@@ -69,8 +67,8 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
       organizationId: values.organizationId,
       dataPointKey: values.dataPointKey,
       displayName: values.displayName,
-      directionIsUp: values.directionIsUp === 'true',
-      comparisonIsAbsolute: values.comparisonIsAbsolute === 'true',
+      isDirectionUp: values.isDirectionUp === 'true',
+      isComparisonAbsolute: values.isComparisonAbsolute === 'true',
       formula: {
         operation: values.operation,
         factor: toInteger(values.factor)
@@ -154,9 +152,9 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div role='group' aria-labelledby='direction-group'>
                     <SubHeader text='Direction' />
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <Field name="directionIsUp" type="radio" value="true"/>
+                      <Field name="isDirectionUp" type="radio" value="true"/>
                       <Description text='Up is positive' style={{ margin: 0 }} />
-                      <Field name="directionIsUp" type="radio" value='false'/>
+                      <Field name="isDirectionUp" type="radio" value='false'/>
                       <Description text='Down is positive' style={{ margin: 0 }} />
 
                     </div>
@@ -165,9 +163,9 @@ const ManageDatapoints = ({ style, ...props }: any): any => {
                   <div role='group' aria-labelledby='comparison-group'>
                     <SubHeader text='Comparison' />
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <Field name="comparisonIsAbsolute" type="radio" value="false" />
+                      <Field name="isComparisonAbsolute" type="radio" value="false" />
                       <Description text='Percentage' style={{ margin: 0 }} />
-                      <Field name="comparisonIsAbsolute" type="radio" value="true"/>
+                      <Field name="isComparisonAbsolute" type="radio" value="true"/>
                       <Description text='Absolute' style={{ margin: 0 }} />
                     </div>
                     <ErrorMessage name="comparison" />

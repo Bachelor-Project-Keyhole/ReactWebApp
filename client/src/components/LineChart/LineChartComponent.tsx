@@ -24,7 +24,7 @@ export const wrapperStyle: React.CSSProperties = {
 export const LineChartStyle: React.CSSProperties = {
   width: '60%',
   height: '60%',
-  marginTop: -8
+  marginTop: 8
 }
 
 export const lastEntryStyle: React.CSSProperties = {
@@ -55,7 +55,7 @@ const LineChartComponent = (
   return (
         <div style={{ ...wrapperStyle, ...style }}>
             <div style={{ ...nameStyle }}>
-                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '90%' }} />
+                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '100%' }} />
             </div>
             <ResponsiveContainer width='80%' height='60%' >
                 <LineChart style={{ ...LineChartStyle }} data={data}>
@@ -71,22 +71,22 @@ const LineChartComponent = (
             <div style={{ ...lastEntryStyle }} >
                 <Description style={{ fontSize: '100%', lineHeight: 0 }} text={ latestEntry.latestValue.toString() }/>
                 <div style={{ ...directionStyle }} >
-                    {latestEntry.directionIsUp && latestEntry.change > 0 &&
+                    {latestEntry.isDirectionUp && latestEntry.change > 0 &&
                         <UpArrowIcon size={20} color='#03C04A' ></UpArrowIcon>
                     }
-                    {latestEntry.directionIsUp && latestEntry.change < 0 &&
+                    {latestEntry.isDirectionUp && latestEntry.change < 0 &&
                         <DownArrowIcon size={20} color='#FF0000' ></DownArrowIcon>
                     }
-                    {!latestEntry.directionIsUp && latestEntry.change < 0 &&
+                    {!latestEntry.isDirectionUp && latestEntry.change < 0 &&
                         <DownArrowIcon size={20} color='#03C04A' ></DownArrowIcon>
                     }
-                    {!latestEntry.directionIsUp && latestEntry.change > 0 &&
+                    {!latestEntry.isDirectionUp && latestEntry.change > 0 &&
                         <DownArrowIcon size={20} color='#FF0000' ></DownArrowIcon>
                     }
-                    { latestEntry.comparisonIsAbsolute &&
+                    { latestEntry.isComparisonAbsolute &&
                         <p>{latestEntry.change}</p>
                     }
-                    { !latestEntry.comparisonIsAbsolute &&
+                    { !latestEntry.isComparisonAbsolute &&
                         <p>{latestEntry.change} %</p>
                     }
                 </div>
