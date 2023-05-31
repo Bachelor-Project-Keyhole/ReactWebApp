@@ -174,7 +174,7 @@ const Register = ({ isNewCompany }: RegisterProps): JSX.Element => {
                       </div>
                     </div>
                     <div style={{ ...inputGroupStyle }}>
-                      <label htmlFor="username">Owner's нame</label>
+                      <label htmlFor="username">Owner's name</label>
                       <Field name="username" type="text" style={{ ...inputStyle }}
                         onFocus={ handleFocus } onBlur={ handleBlur }  />
                       <div style={{ ...errorMessageStyle }}>
