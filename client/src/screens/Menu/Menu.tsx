@@ -34,7 +34,6 @@ const Menu = (): JSX.Element => {
   const handleGetDashboards = React.useCallback(async () => {
     try {
       const dashboards = await getDashboards(organizationId)
-      if(!dashboards)
       setDashboards(dashboards)
     } catch (error) {
       console.log('error', error)
