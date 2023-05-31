@@ -1,5 +1,4 @@
 import * as React from 'react'
-import authorizationHeader from '../Authentication/AuthorizationHeader'
 import { get, update } from 'lodash'
 import { ITemplatePost } from '../TemplateContext/TemplateContext'
 import { type IDatapointEntry } from '../DatapointContext/DatapointContext'

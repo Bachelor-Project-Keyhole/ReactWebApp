@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { type IDatapoint, type IDatapointEntry, type ILatestEntry } from '../DatapointContext/DatapointContext'
 import instance from '../Authentication/AxiosInterceptorService'
-import authorizationHeader from '../Authentication/AuthorizationHeader'
 import { get } from 'lodash'
 
 export interface ITemplate {
@@ -124,8 +123,7 @@ export const TemplateProvider: React.FC<{ children: any }> = props => {
     try {
       const response = await instance({
         method: 'get',
-        url: 'template/' + templateId,
-        headers: authorizationHeader()
+        url: 'template/' + templateId
       })
       const template = get(response, 'data')
       return template

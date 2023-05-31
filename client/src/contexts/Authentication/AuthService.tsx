@@ -1,10 +1,10 @@
 import Header from '../../components/Header/Header'
 import * as React from 'react'
 import { config } from 'webpack'
-import authorizationHeader from './AuthorizationHeader'
 import UserService from './UserService'
 import instance from './AxiosInterceptorService'
 import { useCookies } from 'react-cookie'
+import TokenService from './TokenService'
 
 export interface IAuthServiceContext {
     login: (email: string, password: string) => Promise<any>
@@ -39,13 +39,13 @@ export const AuthServiceProvider: React.FC<{ children: any }> = props => {
         })
         .then(response => {
           if (response.status === 200) {
-            localStorage.setItem('user', JSON.stringify(response.data))
-            //if (navigator.cookieEnabled) {
-            //  var timestampToken = new Date(response.data.expiration)
-            //  var timestampRefresh = new Date(response.data.refreshTokenExpiration)
-            //    setCookie('token', response.data.token, {path: '/', expires: timestampToken})
-            //    setCookie('refreshToken', response.data.refreshToken, {path: '/', expires: timestampRefresh})
-            //}
+            TokenService.setUser(response.data)
+            if (navigator.cookieEnabled) {
+              var timestampToken = new Date(response.data.expiration)
+              var timestampRefresh = new Date(response.data.refreshTokenExpiration)
+                setCookie('token', response.data.token, {path: '/', expires: timestampToken})
+                setCookie('refreshToken', response.data.refreshToken, {path: '/', expires: timestampRefresh})
+            }
           }
           return response.data
         })
