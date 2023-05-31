@@ -24,7 +24,7 @@ export const wrapperStyle: React.CSSProperties = {
 export const barChartStyle: React.CSSProperties = {
   width: '60%',
   height: '60%',
-  marginTop: -8
+  marginTop: 8
 }
 
 export const lastEntryStyle: React.CSSProperties = {

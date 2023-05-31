@@ -24,7 +24,7 @@ export const wrapperStyle: React.CSSProperties = {
 export const LineChartStyle: React.CSSProperties = {
   width: '60%',
   height: '60%',
-  marginTop: -8
+  marginTop: 8
 }
 
 export const lastEntryStyle: React.CSSProperties = {
@@ -55,7 +55,7 @@ const LineChartComponent = (
   return (
         <div style={{ ...wrapperStyle, ...style }}>
             <div style={{ ...nameStyle }}>
-                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '90%' }} />
+                <Description text={datapointName} style={{ lineHeight: 0, fontSize: '100%' }} />
             </div>
             <ResponsiveContainer width='80%' height='60%' >
                 <LineChart style={{ ...LineChartStyle }} data={data}>
